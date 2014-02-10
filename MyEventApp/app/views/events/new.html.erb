@@ -7,4 +7,8 @@ End Time : <%= form.time_select :end %> <br />
 Description : <%= form.text_area :description %> <br /><br />
 <%= hidden_field_tag(:user_id, current_user.id) %>
 <%= form.submit "Create Event" %>
+	Invite your friends!
+	<% @friends.each do|friend| %>
+		<%= friend.name %>
+	<% end %>
 <% end %>

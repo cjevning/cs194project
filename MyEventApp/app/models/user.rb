@@ -6,7 +6,8 @@ class User < ActiveRecord::Base
          :omniauthable, :omniauth_providers => [:facebook]
 
   has_many :events
-
+  has_many :invitations
+  
   def self.new_with_session(params, session)
     super.tap do |user|
       if data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
@@ -15,6 +16,7 @@ class User < ActiveRecord::Base
     end
   end
   def self.find_for_facebook_oauth(auth)
+    
   	where(auth.slice(:provider, :uid)).first_or_create do |user|
   		user.provider = auth.provider
   		user.uid = auth.uid

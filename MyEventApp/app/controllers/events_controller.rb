@@ -5,6 +5,8 @@ class EventsController < ApplicationController
 
   def new
     @event = Event.new
+    user = FbGraph::User.me(session[:fb_access_token]).fetch
+    @friends = user.friends
   end
 
   def show
