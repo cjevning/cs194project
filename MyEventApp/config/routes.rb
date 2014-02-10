@@ -2,7 +2,7 @@ MyEventApp::Application.routes.draw do
  
   root 'home#index'
 
-  devise_for :user, :path => '', :path_names => { :sign_in => "login", :sign_out => "logout", :sign_up => "register" }
+  devise_for :user,  :controllers => { :omniauth_callbacks => "user/omniauth_callbacks" }, :path => '', :path_names => { :sign_in => "login", :sign_out => "logout", :sign_up => "register" }
 
   get 'home/index' => 'home#index'
   get 'home' => 'home#index'
