@@ -1,6 +1,7 @@
 MyEventApp::Application.routes.draw do
+  root 'home#index'
 
-  devise_for :users
+  devise_for :user
 
   get 'home/index' => 'home#index'
   get 'home' => 'home#index'
@@ -10,7 +11,6 @@ MyEventApp::Application.routes.draw do
   get 'events/edit' => 'events#edit'
   
   
-  root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
