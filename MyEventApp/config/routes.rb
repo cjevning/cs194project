@@ -8,7 +8,8 @@ MyEventApp::Application.routes.draw do
   get 'events/new' => 'events#new'
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
-
+  
+  
   root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
