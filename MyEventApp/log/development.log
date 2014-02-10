@@ -5751,3 +5751,35 @@ Migrating to AddProviderToUsers (20140210071447)
   [1m[35mSQL (2.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140210071447"]]
   [1m[36m (14.4ms)[0m  [1mCOMMIT[0m
   [1m[35mActiveRecord::SchemaMigration Load (0.4ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mActiveRecord::SchemaMigration Load (1.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateEvents (20140210073615)
+  [1m[35m (0.5ms)[0m  BEGIN
+  [1m[36m (86.5ms)[0m  [1mCREATE TABLE "events" ("id" serial primary key, "admin" integer NOT NULL, "name" character varying(255), "start" timestamp, "end" timestamp, "description" text, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35mSQL (1.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140210073615"]]
+  [1m[36m (2.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.5ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (121.9ms)[0m  [1mDROP DATABASE IF EXISTS "eventdb"[0m
+  [1m[35m (0.6ms)[0m  DROP DATABASE IF EXISTS "eventdb"
+  [1m[36m (1978.4ms)[0m  [1mCREATE DATABASE "eventdb" ENCODING = 'unicode'[0m
+  [1m[35m (1.3ms)[0m  CREATE DATABASE "eventdb" ENCODING = 'unicode'
+PG::DuplicateDatabase: ERROR:  database "eventdb" already exists
+: CREATE DATABASE "eventdb" ENCODING = 'unicode'
+  [1m[36mSQL (6.1ms)[0m  [1mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (93.3ms)[0m  CREATE TABLE "authorizations" ("id" serial primary key, "provider" character varying(255), "uid" character varying(255), "user_id" integer, "token" character varying(255), "secret" character varying(255), "name" character varying(255), "link" character varying(255), "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (49.4ms)[0m  [1mCREATE TABLE "events" ("id" serial primary key, "admin" integer NOT NULL, "name" character varying(255), "start" timestamp, "end" timestamp, "description" text, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (36.7ms)[0m  CREATE TABLE "sessions" ("id" serial primary key, "session_id" character varying(255) NOT NULL, "data" text, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (20.3ms)[0m  [1mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" USING btree ("session_id")[0m
+  [1m[35m (15.6ms)[0m  CREATE INDEX "index_sessions_on_updated_at" ON "sessions" USING btree ("updated_at")
+  [1m[36m (45.6ms)[0m  [1mCREATE TABLE "users" ("id" serial primary key, "email" character varying(255) DEFAULT '' NOT NULL, "encrypted_password" character varying(255) DEFAULT '' NOT NULL, "reset_password_token" character varying(255), "reset_password_sent_at" timestamp, "remember_created_at" timestamp, "sign_in_count" integer DEFAULT 0 NOT NULL, "current_sign_in_at" timestamp, "last_sign_in_at" timestamp, "current_sign_in_ip" character varying(255), "last_sign_in_ip" character varying(255), "created_at" timestamp, "updated_at" timestamp, "uid" integer, "provider" character varying(255)) [0m
+  [1m[35m (9.0ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" USING btree ("email")
+  [1m[36m (11.0ms)[0m  [1mCREATE UNIQUE INDEX "index_users_on_reset_password_token" ON "users" USING btree ("reset_password_token")[0m
+  [1m[35m (4.7ms)[0m  CREATE TABLE "schema_migrations" ("version" character varying(255) NOT NULL) 
+  [1m[36m (13.6ms)[0m  [1mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [1m[35m (0.6ms)[0m  SELECT version FROM "schema_migrations"
+  [1m[36m (3.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140210073615')[0m
+  [1m[35m (3.5ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140210071447')
+  [1m[36m (3.5ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140210023200')[0m
+  [1m[35m (3.4ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140210065603')
+  [1m[36m (3.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140204215952')[0m
+  [1m[35m (3.5ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140210064002')
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m

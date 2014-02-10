@@ -1,7 +1,7 @@
 class CreateEvents < ActiveRecord::Migration
   def change
     create_table :events do |t|
- 	  t.integer  :admin,  :null => false
+ 	  t.integer  :user_id
  	  t.string   :name
       t.datetime :start
       t.datetime :end

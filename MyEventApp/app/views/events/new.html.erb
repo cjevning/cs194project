@@ -1,4 +1,4 @@
-<%=form_for @event, url: {action:create} do |form| %>
+<%= form_for @event, url: {action:create} do |form| %>
 
 <%= form.text_field :name %>
 <%= form.time_select :start, prompt: true %>
