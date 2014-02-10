@@ -7,8 +7,6 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<% if !user_signed_in? gender 'users#sign_in' end %>
 <%= yield %>
-
 </body>
 </html>
