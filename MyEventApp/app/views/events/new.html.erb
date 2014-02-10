@@ -1,2 +1,9 @@
-<h1>Events#new</h1>
-<p>Find me in app/views/events/new.html.erb</p>
+<%=form_for @event, url: {action:create} do |form| %>
+
+<%= form.text_field :name %>
+<%= form.time_select :start, prompt: true %>
+
+<%= form.time_select :end, prompt: true %>
+<%= form.text_field :description %>
+
+<% end %>
