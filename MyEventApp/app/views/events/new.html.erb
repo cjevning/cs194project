@@ -1,9 +1,10 @@
-<%= form_for @event, url: {action:create} do |form| %>
+<%= form_for @event do |form| %>
 
-<%= form.text_field :name %>
-<%= form.time_select :start, prompt: true %>
+Name : <%= form.text_field :name %> <br />
+Start Time : <%= form.time_select :start, prompt: true %> <br />
 
-<%= form.time_select :end, prompt: true %>
-<%= form.text_field :description %>
-
+End Time : <%= form.time_select :end, prompt: true %> <br />
+Description : <%= form.text_area :description %> <br /><br />
+<%= hidden_field_tag(:user_id, current_user.id) %>
+<%= form.submit "Create Event" %>
 <% end %>

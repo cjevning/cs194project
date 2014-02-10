@@ -11,7 +11,9 @@ MyEventApp::Application.routes.draw do
   get 'events/new' => 'events#new'
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
-  
+  get 'events/show' => 'events#show'
+  match 'events/create' => 'events#create', via: [:get, :post], :as => :event
+  resources :events
   
 
   # The priority is based upon order of creation: first created -> highest priority.
