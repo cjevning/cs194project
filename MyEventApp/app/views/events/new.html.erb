@@ -1,4 +1,3 @@
-
 <%= form_for @event do |form| %>
 
 Name : <%= form.text_field :name %> <br />
@@ -8,7 +7,26 @@ End Time : <%= form.time_select :end %> <br />
 Description : <%= form.text_area :description %> <br /><br />
 <%= form.submit "Create Event" %>
 	Invite your friends!
+	<div id="fb-root"></div>
+	<a href="#" id="invite_fb_friends">Invite your friends</a>
+	<script src="http://connect.facebook.net/en_US/all.js"></script>
+	<script>
+	$(function(){
+	    $("a#invite_fb_friends").click(function(){
+	        FB.init({
+	        appId: '248143532030294',
+	        status: true,
+	        cookie: false,
+	        // xfbml: true
+	        });
+
+		FB.ui({
+			method: 'apprequests',
+			message: 'conner has invite you to app'});
+		});
+	});
+	</script>
 	<% @friends.each do|friend| %>
-		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %> <br />
+		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %>
 	<% end %>
 <% end %>

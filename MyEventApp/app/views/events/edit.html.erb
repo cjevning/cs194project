@@ -1,2 +1,9 @@
-<h1>Events#edit</h1>
-<p>Find me in app/views/events/edit.html.erb</p>
+<%= form_for @event, :action=> edit do |form| %>
+
+	Name : <%= form.text_field :name, :default => @event.name %> <br />
+	Start Time : <%= form.time_select :start, :default =>@event.start %> <br />
+
+	End Time : <%= form.time_select :end, :default => @event.end %> <br />
+	Description : <%= form.text_area :description, :default => event.description %> <br/>
+<br />
+<%= form.submit "Edit Event" %>

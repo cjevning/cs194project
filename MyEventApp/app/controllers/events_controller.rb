@@ -18,11 +18,18 @@ class EventsController < ApplicationController
   end
 
   def delete
-     
+     Event.destroy(params[:id])
+     Invitations.where(event_id:params[:id]).destroy_all
+     redirect_to index
   end
 
   def edit
-  
+    @event = Event.find(params[:id])
+  end
+
+  def update
+    @event = Event.find(event_params[:id])
+    @event.update_attributes(event_params)
   end
 
   def create
@@ -42,8 +49,7 @@ class EventsController < ApplicationController
           
           invite.save
         end
-        
-      redirect_to :action => 'show', :id => @event.id 
+        redirect_to :action => 'show', :id => @event.id 
     else
       flash[:error] = "Event not created!"
       redirect_to action: 'new'
