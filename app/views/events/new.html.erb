@@ -7,6 +7,22 @@ End Time : <%= form.time_select :end %> <br />
 Description : <%= form.text_area :description %> <br /><br />
 <%= form.submit "Create Event" %>
 	Invite your friends!
+	<script type="text/javascript">
+		$(function(){ 
+
+          $("a#invite_fb_friends").click(function() { 
+            FB.init({ 
+               appId:'462365563891934', 
+               cookie:false, 
+               status:true 
+            }); 
+
+            FB.ui({ method: 'apprequests', 
+                    message: 'thinks you are really 
+nice.',  
+          }); 
+        });
+	</script>
 	<% @friends.each do|friend| %>
 		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %>
 	<% end %>

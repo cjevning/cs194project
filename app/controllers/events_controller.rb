@@ -40,11 +40,10 @@ class EventsController < ApplicationController
           invite.seen = false
           invite.created_at = Time.now
           invite.save
-          app_request = FbGraph::User.me(session[:fb_access_token]).app_request!(
-                      :message => @event.description,
-                      :to      => friend.to_i)
         end
-        
+        app_request = FbGraph::User.me(session[:fb_access_token]).app_request!(
+                      :message => @event.description,
+                      :to      => @friends)
 
         redirect_to :action => 'show', :id => @event.id 
     else
