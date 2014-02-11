@@ -1,4 +1,14 @@
 <% if user_signed_in? %>
+	<br/>
+	<h1>Invitations</h1>
+	<% @invitations.each do |invitation| %>
+		<%= render partial: "invitation_list_item", locals: {invitation: invitation} %>
+	<% end %>
+	
+	<h1>Events</h1>
+	<% @events.each do |event| %>
+		<%= render partial: "event_list_item", locals: {event: event} %>
+	<% end %>
 	<%= link_to "Create a fun event!", :controller => 'events', :action => 'new' %>
 <% else %>
 	<%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>

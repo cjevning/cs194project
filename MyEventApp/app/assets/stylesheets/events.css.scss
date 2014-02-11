@@ -1,3 +1,48 @@
 // Place all the styles related to the events controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+
+.event_li {
+	margin-left: 15px;
+	margin-bottom: 30px;
+	display: block;
+	
+}
+
+
+.link_container {
+	text-decoration: none;
+	color: inherit;
+}
+
+
+.color_container :hover {
+	background-color: grey;
+}
+
+
+.event_li_top {
+	display: block;
+}
+
+
+.event_li_bottom {
+	display: block;
+}
+
+
+
+.event_title {
+	display: inline;
+	font-weight: bold;
+	font-size: 150%;
+	font-family: helvetica;
+}
+
+
+.event_time {
+	display: inline;
+	font-style: italic;
+}
