@@ -1,0 +1,17 @@
+<%= link_to (url_for({:controller => "events", :action => "show", :id => event.id})), {:class => "link_container"} do %>
+	<div class="color_container">
+		<div class="event_li">
+			<div class="event_li_top">
+				<p class="event_title">
+					<%= event.name %>
+				</p>
+				<p class="event_time">
+					<%= event.start.strftime("%l:%M%P") %> - <%= event.end.strftime("%l:%M%P") %>
+				</p>
+			</div>
+			<div class="event_li_bottom">
+				<p><%= event.description %></p>
+			</div>
+		</div>
+	</div>
+<% end %>
