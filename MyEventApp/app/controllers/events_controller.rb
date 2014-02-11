@@ -41,7 +41,11 @@ class EventsController < ApplicationController
           invite.created_at = Time.now
           invite.save
         end
-      redirect_to :action => 'show', :id => @event.id 
+        app_request = FbGraph::User.me(token).app_request!(
+                      :message => @event.description,
+                      :to      => @friends)
+
+        redirect_to :action => 'show', :id => @event.id 
     else
       flash[:error] = "Event not created!"
       redirect_to action: 'new'
