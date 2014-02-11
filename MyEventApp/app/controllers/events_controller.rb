@@ -14,7 +14,7 @@ class EventsController < ApplicationController
        redirect_to action: 'new' 
     end
     @event = Event.find(params[:id])
-
+    @invites = Invitations.where(event_id:@event.id)
   end
 
   def delete
@@ -27,8 +27,19 @@ class EventsController < ApplicationController
 
   def create
   	@event = Event.new(event_params)
+    @friends = params[:friends].permit(:friends)
+
     if @event.save
       flash[:success] = "Event Created!"
+        @friends.each do|friend|
+          invite = Invitations.new
+          invite.user_id = friend.uid
+          invite.event_id = @event.id 
+          invite.accepted = false 
+          invite.seen = false
+          invite.created_at = Time.now
+          invite.save
+        end
       redirect_to :action => 'show', :id => @event.id 
     else
       flash[:error] = "Event not created!"

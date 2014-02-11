@@ -9,6 +9,6 @@ Description : <%= form.text_area :description %> <br /><br />
 <%= form.submit "Create Event" %>
 	Invite your friends!
 	<% @friends.each do|friend| %>
-		<%= friend.name %>
+		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.uid %>
 	<% end %>
 <% end %>
