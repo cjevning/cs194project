@@ -29,7 +29,7 @@ class EventsController < ApplicationController
   	@event = Event.new(event_params)
     @event.user = current_user
     @friends = params[:friends]
-
+    token = session[:fb_access_token]
     if @event.save
       flash[:success] = "Event Created!"
         @friends.each do|friend|
@@ -39,13 +39,11 @@ class EventsController < ApplicationController
           invite.accepted = false 
           invite.seen = false
           invite.created_at = Time.now
+          
           invite.save
         end
-        app_request = FbGraph::User.me(token).app_request!(
-                      :message => @event.description,
-                      :to      => @friends)
-
-        redirect_to :action => 'show', :id => @event.id 
+        
+      redirect_to :action => 'show', :id => @event.id 
     else
       flash[:error] = "Event not created!"
       redirect_to action: 'new'
