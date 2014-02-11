@@ -18,7 +18,7 @@ class EventsController < ApplicationController
   end
 
   def delete
-  
+     
   end
 
   def edit
@@ -27,6 +27,7 @@ class EventsController < ApplicationController
 
   def create
   	@event = Event.new(event_params)
+    @event.user = current_user
     @friends = params[:friends]
 
     if @event.save
