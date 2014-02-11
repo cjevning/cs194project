@@ -3,8 +3,7 @@ MyEventApp::Application.routes.draw do
   root 'home#index'
 
   devise_for :user, :controllers => { :omniauth_callbacks => "user/omniauth_callbacks" }
-
-
+  
   get 'home/index' => 'home#index'
   get 'home' => 'home#index'
   get 'events/index' => 'events#index'

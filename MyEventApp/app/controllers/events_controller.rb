@@ -27,13 +27,13 @@ class EventsController < ApplicationController
 
   def create
   	@event = Event.new(event_params)
-    @friends = params[:friends].permit(:friends)
+    @friends = params[:friends]
 
     if @event.save
       flash[:success] = "Event Created!"
         @friends.each do|friend|
           invite = Invitations.new
-          invite.user_id = friend.uid
+          invite.user_id = friend
           invite.event_id = @event.id 
           invite.accepted = false 
           invite.seen = false

@@ -7,17 +7,6 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<div id="app_header">
-  <div id="home_button">
-    <%= link_to "Home", :controller => "home", :action => "index" %>
-  </div>
-  <div id="profile_button">
-    <%= link_to "Profile", :controller => "home", :action => "index" %>
-  </div>
-  <div id="new_event_button">
-    <%= link_to "New Event", :controller => "events", :action => "new" %>
-  </div>
-</div>
 <%= yield %>
 </body>
 </html>
