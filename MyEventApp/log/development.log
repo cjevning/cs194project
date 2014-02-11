@@ -5790,3 +5790,132 @@ Migrating to CreateInvitations (20140210115208)
   [1m[35mSQL (2.4ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140210115208"]]
   [1m[36m (4.2ms)[0m  [1mCOMMIT[0m
   [1m[35mActiveRecord::SchemaMigration Load (0.4ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.4ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+
+
+Started GET "/" for 127.0.0.1 at 2014-02-10 19:13:13 -0800
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by HomeController#index as HTML
+  [1m[35mActiveRecord::SessionStore::Session Load (2.0ms)[0m  SELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1
+Completed 401 Unauthorized in 62ms
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  COMMIT
+
+
+Started GET "/user/sign_in" for 127.0.0.1 at 2014-02-10 19:13:13 -0800
+Processing by Devise::SessionsController#new as HTML
+  [1m[36mActiveRecord::SessionStore::Session Load (0.6ms)[0m  [1mSELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1[0m
+  Rendered devise/sessions/new.html.erb within layouts/application (1.8ms)
+Completed 500 Internal Server Error in 420ms
+
+ActionView::Template::Error (No route matches {:action=>"index", :controller=>"devise/home"}):
+     8: </head>
+     9: <body>
+    10: <div id="app_header">
+    11:   <%= link_to "Home", :controller => 'home', :action => 'index' %>
+    12:   <%= link_to "Profile", :controller => 'home', :action => 'index' %>
+    13:   <%= link_to "New Event", :controller => 'events', :action => 'new' %>
+    14: </div>
+  app/views/layouts/application.html.erb:11:in `_app_views_layouts_application_html_erb__523038387710816237_70357019651100'
+
+
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.0ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (11.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2014-02-10 19:13:55 -0800
+Processing by HomeController#index as HTML
+  [1m[35mActiveRecord::SessionStore::Session Load (0.8ms)[0m  SELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1
+Completed 401 Unauthorized in 3ms
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  COMMIT
+
+
+Started GET "/user/sign_in" for 127.0.0.1 at 2014-02-10 19:13:55 -0800
+Processing by Devise::SessionsController#new as HTML
+  [1m[36mActiveRecord::SessionStore::Session Load (0.6ms)[0m  [1mSELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1[0m
+  Rendered devise/sessions/new.html.erb within layouts/application (0.5ms)
+Completed 500 Internal Server Error in 46ms
+
+ActionView::Template::Error (No route matches {:action=>"index", :controller=>"devise/home"}):
+     8: </head>
+     9: <body>
+    10: <div id="app_header">
+    11:   <%= link_to "Home", :controller => 'home', :action => 'index' %>
+    12:   <%= link_to "Profile", :controller => 'home', :action => 'index' %>
+    13:   <%= link_to "New Event", :controller => 'events', :action => 'new' %>
+    14: </div>
+  app/views/layouts/application.html.erb:11:in `_app_views_layouts_application_html_erb__523038387710816237_70357019651100'
+
+
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.3ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.3ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (12.6ms)
+
+
+Started GET "/user/sign_in" for 127.0.0.1 at 2014-02-10 19:15:00 -0800
+Processing by Devise::SessionsController#new as HTML
+  [1m[35mActiveRecord::SessionStore::Session Load (0.6ms)[0m  SELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1
+  Rendered devise/sessions/new.html.erb within layouts/application (0.7ms)
+Completed 500 Internal Server Error in 12ms
+
+ActionView::Template::Error (No route matches {:action=>"index", :controller=>"devise/home"}):
+     8: </head>
+     9: <body>
+    10: <div id="app_header">
+    11:   <%= link_to "Home", :controller => "home", :action => "index" %>
+    12:   <%= link_to "Profile", :controller => 'home', :action => 'index' %>
+    13:   <%= link_to "New Event", :controller => 'events', :action => 'new' %>
+    14: </div>
+  app/views/layouts/application.html.erb:11:in `_app_views_layouts_application_html_erb__523038387710816237_70357039114360'
+
+
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.5ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.0ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (12.2ms)
+
+
+Started GET "/user/sign_in" for 127.0.0.1 at 2014-02-10 19:15:03 -0800
+Processing by Devise::SessionsController#new as HTML
+  [1m[36mActiveRecord::SessionStore::Session Load (0.5ms)[0m  [1mSELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1[0m
+  Rendered devise/sessions/new.html.erb within layouts/application (0.4ms)
+Completed 500 Internal Server Error in 9ms
+
+ActionView::Template::Error (No route matches {:action=>"index", :controller=>"devise/home"}):
+     8: </head>
+     9: <body>
+    10: <div id="app_header">
+    11:   <%= link_to "Home", :controller => "home", :action => "index" %>
+    12:   <%= link_to "Profile", :controller => 'home', :action => 'index' %>
+    13:   <%= link_to "New Event", :controller => 'events', :action => 'new' %>
+    14: </div>
+  app/views/layouts/application.html.erb:11:in `_app_views_layouts_application_html_erb__523038387710816237_70357039114360'
+
+
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.3ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.9ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (8.7ms)
+
+
+Started GET "/user/sign_in" for 127.0.0.1 at 2014-02-10 19:16:11 -0800
+Processing by Devise::SessionsController#new as HTML
+  [1m[35mActiveRecord::SessionStore::Session Load (0.7ms)[0m  SELECT "sessions".* FROM "sessions" WHERE "sessions"."session_id" = '3e1544487d32e9346adc477909d733de' ORDER BY "sessions"."id" ASC LIMIT 1
+  Rendered devise/sessions/new.html.erb within layouts/application (0.4ms)
+Completed 500 Internal Server Error in 11ms
+
+ActionView::Template::Error (No route matches {:action=>"index", :controller=>"devise/home"}):
+     8: </head>
+     9: <body>
+    10: <div id="app_header">
+    11:   <%= link_to "Home", :controller => "home", :action => "index" %>
+    12:   <%= link_to "Profile", :controller => "home", :action => "index" %>
+    13:   <%= link_to "New Event", :controller => "events", :action => "new" %>
+    14: </div>
+  app/views/layouts/application.html.erb:11:in `_app_views_layouts_application_html_erb__523038387710816237_70357037881120'
+
+
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Library/Ruby/Gems/2.0.0/gems/actionpack-4.0.2/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (7.4ms)
