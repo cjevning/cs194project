@@ -42,7 +42,7 @@ class EventsController < ApplicationController
           invite.save
           app_request = FbGraph::User.me(session[:fb_access_token]).app_request!(
                       :message => @event.description,
-                      :to      => friend)
+                      :to      => friend.to_i)
         end
         
 
