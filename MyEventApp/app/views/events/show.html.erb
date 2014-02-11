@@ -1,5 +1,4 @@
 <h3> <%= @event.name %> </h3>
-</div>
 <div class='list-group'>
 <% @invites.each do |invite| %>
 	<% if invite.accepted %>
@@ -12,8 +11,8 @@
 		<% end %>
 		<%= invite.user_id %> </span>
 <% end %>
-<%= link_to 'delete', :controller => 'events', :action => 'delete', :id=>@event.id, :html => { :class => "btn" } %>
+<%= link_to 'delete', :controller => 'events', :action => 'delete', :id => @event.id, :class => "btn" %>
 
-<%= link_to 'edit', :controller=> 'events', :action => 'edit', :id=>@event.id, :html => {:class => "btn" } %>
+<%= link_to 'edit', :controller=> 'events', :action => 'edit', :id => @event.id, :class => "btn" %>
 </div>
 
