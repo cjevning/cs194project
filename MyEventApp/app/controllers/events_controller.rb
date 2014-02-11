@@ -32,10 +32,16 @@ class EventsController < ApplicationController
     @event.update_attributes(event_params)
   end
 
+  def forward
+    redirect_to :action => 'show', :id => @event.id
+  end
+  helper_method :forward
+
   def create
   	@event = Event.new(event_params)
     @event.user = current_user
     @friends = params[:friends]
+    @nonUsers = Array.new
     token = session[:fb_access_token]
     if @event.save
       flash[:success] = "Event Created!"
@@ -48,8 +54,10 @@ class EventsController < ApplicationController
           invite.created_at = Time.now
           
           invite.save
+          @nonUsers << friend.to_s
+
         end
-        redirect_to :action => 'show', :id => @event.id 
+        render :partial => "invite_non_users", :locals => { :id => @event.id, :nonUsers => @nonUsers }
     else
       flash[:error] = "Event not created!"
       redirect_to action: 'new'
