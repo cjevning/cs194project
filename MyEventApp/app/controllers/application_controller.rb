@@ -1,6 +1,16 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
+  layout :layout
+  
+  private
+  
+  def layout
+      # only turn it off for login pages:
+      is_a?(Devise::SessionsController) ? false : "application"
+  end
+  
+  
   protect_from_forgery with: :exception
   before_filter :authenticate_user!
   def facebook_user

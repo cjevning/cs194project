@@ -11,6 +11,7 @@ MyEventApp::Application.routes.draw do
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
   get 'events/show' => 'events#show'
+  get 'user/profile' => 'user#profile'
 
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events

@@ -1,3 +1,4 @@
+<div id="container" style="margin-top: 50px;">
 <%= form_for @event do |form| %>
 
 Name : <%= form.text_field :name %> <br />
@@ -30,3 +31,4 @@ Description : <%= form.text_area :description %> <br /><br />
 		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %>
 	<% end %>
 <% end %>
+</div>
