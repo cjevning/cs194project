@@ -1,0 +1,5 @@
+<div class="results_list list_group">
+<% @matching_friends.each do |friend| %>
+	<a href="#" class="list-group-item" onclick="friend_selected('<%= friend.name %>', <%= friend.identifier %>);return false;"><%= friend.name %></a>
+<% end %>
+</div>

@@ -7,9 +7,9 @@
 	<br/>
 	<h1>Events</h1>
 	<div class="list-group">
-	<% @events.each do |event| %>
-		<%= render partial: "event_list_item", locals: {event: event} %>
-	<% end %>
+		<% @events.each do |event| %>
+			<%= render partial: "event_list_item", locals: {event: event} %>
+		<% end %>
 	</div>
 	<%= link_to "Create a fun event!", :controller => 'events', :action => 'new' %>
 <% else %>

@@ -1,14 +1,53 @@
-<div id="container" style="margin-top: 50px;">
-<%= form_for @event do |form| %>
+<h1> Create Event </h1>
+<%= form_for @event, {:class => "navbar-form"} do |form| %>
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">Name</span>
+		<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
+	</div>
+	
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">Start Time</span>
+		<div class="input-group">
+			<div class="input-group-btn">
+				<%= form.time_select :start, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+			</div>
+		</div>
+	</div>
 
-Name : <%= form.text_field :name %> <br />
-Start Time : <%= form.time_select :start %> <br />
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">End Time</span>
+		<div class="input-group">
+			<div class="input-group-btn">
+				<%= form.time_select :end, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+			</div>
+		</div>
+	</div>
 
-End Time : <%= form.time_select :end %> <br />
-Description : <%= form.text_area :description %> <br /><br />
-<%= form.submit "Create Event" %>
-	Invite your friends!
-	<div id="fb-root"></div>
+
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">Description</span>
+		<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
+	</div>
+
+	<div class="input-group new_event_form_line">
+		<div id="friend_search">
+			<h3>Invite friends</h3>
+			<%= text_field_tag :search, params[:search], :class => "form-control" %>
+			<%= form.submit "Create Event", {:class => "btn btn-default submit_button"} %>
+			<div id="search_results"></div>
+			<script type="text/javascript">
+				new search_for_friends("search_results", "search", "/user/search");
+			</script>
+			
+		</div>
+		<div id="invited_friends">
+			<ul class="list-group" id="invited_list">
+							
+			</ul>
+		</div>
+	</div>
+	
+	<!--<div id="fb-root"></div>
 	<a href="#" id="invite_fb_friends">Invite your friends</a>
 	<script src="http://connect.facebook.net/en_US/all.js"></script>
 	<script>
@@ -29,6 +68,5 @@ Description : <%= form.text_area :description %> <br /><br />
 	</script>
 	<% @friends.each do|friend| %>
 		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %>
-	<% end %>
+	<% end %>-->
 <% end %>
-</div>

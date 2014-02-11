@@ -18,9 +18,9 @@ class EventsController < ApplicationController
   end
 
   def delete
-     Event.destroy(params[:id])
-     Invitations.where(event_id:params[:id]).destroy_all
-     redirect_to index
+      Invitations.where(event_id:params[:id]).destroy_all
+      Event.destroy(params[:id])
+      redirect_to controller: 'home', action: 'index'
   end
 
   def edit
@@ -39,15 +39,17 @@ class EventsController < ApplicationController
     token = session[:fb_access_token]
     if @event.save
       flash[:success] = "Event Created!"
-        @friends.each do|friend|
-          invite = Invitations.new
-          invite.user_id = friend
-          invite.event_id = @event.id 
-          invite.accepted = false 
-          invite.seen = false
-          invite.created_at = Time.now
+        if !@friends.nil? then
+          @friends.each do |friend|
+            invite = Invitations.new
+            invite.user_id = friend
+            invite.event = @event
+            invite.accepted = false
+            invite.seen = false
+            invite.created_at = Time.now
           
-          invite.save
+            invite.save
+          end
         end
         redirect_to :action => 'show', :id => @event.id 
     else
