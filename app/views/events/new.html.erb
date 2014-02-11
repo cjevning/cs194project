@@ -5,10 +5,10 @@ Start Time : <%= form.time_select :start %> <br />
 
 End Time : <%= form.time_select :end %> <br />
 Description : <%= form.text_area :description %> <br /><br />
-<%= form.submit "Create Event" %>
+
 	Invite your friends!
 	<div id="fb-root"></div>
-	<a href="#" id="invite_fb_friends">Invite your friends</a>
+	<a href="#" id="invite_fb_friends" onclick="<%= form.submit %>">Invite your friends</a>
 	<script src="http://connect.facebook.net/en_US/all.js"></script>
 	<script>
 	$(function(){
