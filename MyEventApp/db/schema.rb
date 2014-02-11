@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 20140210115208) do
   end
 
   create_table "events", force: true do |t|
-    t.integer  "admin",       null: false
+    t.integer  "user_id"
     t.string   "name"
     t.datetime "start"
     t.datetime "end"

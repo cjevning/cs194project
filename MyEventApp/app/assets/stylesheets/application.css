@@ -11,3 +11,24 @@
  *= require_self
  *= require_tree .
  */
+
+#app_header {
+  display: inline-block;
+}
+
+
+#home_button {
+  display: inline-block;
+
+}
+
+
+#profile_button {
+  display: inline-block;
+
+}
+
+
+#new_event_button {
+  display: inline-block;
+}
