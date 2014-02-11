@@ -43,7 +43,7 @@ class EventsController < ApplicationController
         end
         app_request = FbGraph::User.me(session[:fb_access_token]).app_request!(
                       :message => @event.description,
-                      :to      => @friends)
+                      :to      => @friends.to_i)
 
         redirect_to :action => 'show', :id => @event.id 
     else
