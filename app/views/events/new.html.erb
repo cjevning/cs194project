@@ -9,18 +9,10 @@ Description : <%= form.text_area :description %> <br /><br />
 	Invite your friends!
 	<script type="text/javascript">
 		$(function(){ 
-
-          $("a#invite_fb_friends").click(function() { 
-            FB.init({ 
-               appId:'462365563891934', 
-               cookie:false, 
-               status:true 
-            }); 
-
-            FB.ui({ method: 'apprequests', 
-                    message: 'thinks you are really 
-nice.',  
-          }); 
+			FB.ui({
+			    method: 'apprequests',
+			    message: 'My Great Request'
+			}, requestCallback);
         });
 	</script>
 	<% @friends.each do|friend| %>
