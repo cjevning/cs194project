@@ -8,4 +8,9 @@ class HomeController < ApplicationController
             puts event.user_id
         end
 	end
+
+	def eventsAccordion
+		@invitations = Invitations.where( user_id: current_user.id )
+		@events = Event.where( user_id: current_user.id )
+	end
 end
