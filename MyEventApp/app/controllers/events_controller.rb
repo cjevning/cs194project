@@ -32,6 +32,17 @@ class EventsController < ApplicationController
     @event.update_attributes(event_params)
   end
 
+  def update_attendance
+    #want to allow me to update invitations
+    @event = Event.find(params[:id])
+    @invites = Invitations.where(event_id:@event.id)
+    @invites.each { |invite| Invitations.update_attendance}
+    
+    time = Time.now.getutc
+
+
+  end
+
   def create
   	@event = Event.new(event_params)
     @event.user = current_user

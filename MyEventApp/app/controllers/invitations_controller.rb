@@ -8,8 +8,15 @@ def update
 
 end
 
+def update
+	#set attendance to true
+	@invitation.update_attributes(invitations_params)
+end
+
+
 private
     def invitations_params
-        params.require(:event).permit(:user_id, :event_id, :accepted, :seen)
+    	#trying to add attended field
+        params.require(:event).permit(:user_id, :event_id, :accepted, :seen, :attended)
     end
 end
