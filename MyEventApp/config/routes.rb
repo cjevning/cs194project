@@ -1,5 +1,6 @@
 MyEventApp::Application.routes.draw do
  
+  get "calendar/day"
   root 'home#index'
 
   devise_for :user, :controllers => { :omniauth_callbacks => "user/omniauth_callbacks" }

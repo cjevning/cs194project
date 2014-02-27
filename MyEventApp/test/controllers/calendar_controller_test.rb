@@ -1,7 +1,9 @@
 require 'test_helper'
 
 class CalendarControllerTest < ActionController::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "should get day" do
+    get :day
+    assert_response :success
+  end
+
 end

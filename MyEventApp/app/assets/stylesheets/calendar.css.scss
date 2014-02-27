@@ -1,0 +1,56 @@
+// Place all the styles related to the calendar controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+#drag_container {
+	float: right;
+	width: 90%;
+	padding-top: 10px;
+}
+
+
+.event_item {
+	background-color: blue;
+	position: absolute;
+}
+
+
+.hour_row {
+	width: 100%;
+	height: 50px;
+	border-top: 1px solid;
+	border-color: rgb(192,192,192);
+}
+
+
+#hour11p {
+	border-bottom: 1px solid;
+	border-color: rgb(192,192,192);
+}
+
+
+#test_element {
+	background-color: blue;
+}
+
+
+#calendar_wrapper {
+	display: inline;
+}
+
+
+#hour_label_wrapper {
+	float: left;
+	display: block;
+	height: 100%;
+	width: 10%;
+	padding-right: 5px;
+}
+
+
+.hour_label {
+	margin-left: 10px;
+	margin-bottom: 30px;
+	text-align: right;
+}
