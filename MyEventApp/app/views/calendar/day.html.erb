@@ -1,0 +1,36 @@
+<div id="calendar_wrapper">
+	<div id="hour_label_wrapper">
+		<p class="hour_label">12</p>
+		<% x = 1 %>
+		<% while x < 13 %>
+			<p class="hour_label"><%= x %></p>
+			<% x += 1 %>
+		<% end %>
+		<% x = 1 %>
+		<% while x < 13 %>
+			<p class="hour_label"><%= x %></p>
+			<% x += 1 %>
+		<% end %>
+	</div>
+
+	<div id="drag_container">
+		<% am = 0 %>
+		<% while am < 12 %>
+			<div class="hour_row" id="hour<%= am %>">
+		
+			</div>
+			<% am += 1 %>
+		<% end %>
+		<% pm = 0 %>
+		<% while pm < 12 %>
+			<div class="hour_row" id="hour<%= 12 + pm %>">
+		
+			</div>
+			<% pm += 1 %>
+		<% end %>
+
+	</div>
+</div>
+<script type="text/javascript">
+	window.onload = loadEvents;
+</script>
