@@ -1,0 +1,30 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<div id="fb-root"></div>
+	<script src="http://connect.facebook.net/en_US/all.js"></script>
+	<script>
+	$(function(){
+	    $("a#invite_fb_friends").click(function(){
+	        FB.init({
+	        appId: '462365563891934',
+	        status: true,
+	        cookie: false,
+	        // xfbml: true
+	        });
+	        <% nonUsers.each do |non| %>
+				FB.ui({method: 'apprequests',
+			        message: 'this shit better work',
+			        to: '<%= non %>'
+			    }, requestCallback);
+	    <% end %>
+	    FB.ui({method: 'apprequests',
+			        message: 'this shit better work',
+			        to: '100007773906483'
+			    }, requestCallback);
+	});
+	    });
+	
+	</script>
+</div>
+
+
+
