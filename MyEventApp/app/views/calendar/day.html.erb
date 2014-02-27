@@ -16,14 +16,14 @@
 	<div id="drag_container">
 		<% am = 0 %>
 		<% while am < 12 %>
-			<div class="hour_row" id="hour<%= am %>a">
+			<div class="hour_row" id="hour<%= am %>">
 		
 			</div>
 			<% am += 1 %>
 		<% end %>
 		<% pm = 0 %>
 		<% while pm < 12 %>
-			<div class="hour_row" id="hour<%= pm %>p">
+			<div class="hour_row" id="hour<%= 12 + pm %>">
 		
 			</div>
 			<% pm += 1 %>

@@ -2,10 +2,10 @@
 var eventActive = null;
 var touchOffsetX = 0;
 var touchOffsetY = 0;
+var timeSlots = new Array();
 
 
 function loadEvents() {
-	var dragContainer = document.getElementById('drag_container');
 	
 	sendEventRequest();
 }
@@ -25,10 +25,8 @@ function sendEventRequest() {
 			return;
 		} else {
 			var eventArray = JSON.parse(eventXhr.responseText);
-			console.log(eventArray);
 			for (var event in eventArray) {
 				var eventCopy = eventArray[event];
-				console.log(eventCopy);
 				processEvent(eventCopy);
 			}
 		}
@@ -38,24 +36,30 @@ function sendEventRequest() {
 
 
 function processEvent(event) {
-	var dragContainer = document.getElementById('drag_container');
+	dateSeconds = event["start_in_seconds"];
+	date = new Date(Number(dateSeconds)*1000);
+	if (timeSlots[date.getHours()] != null) {
+		return;
+	}
+	var hourContainer = document.getElementById('hour' + date.getHours());
 
-	eventOne = createEventElement(event);
-	dragContainer.appendChild(eventOne);
-	addListeners(eventOne);
+	eventElement = createEventElement(event);
+	hourContainer.appendChild(eventElement);
+	addListeners(eventElement);
+	timeSlots[date.getHours()] = eventElement;
 }
 
 
 
 function createEventElement(event) {
-	console.log(event);
 	panel = document.createElement("DIV");
 	panel.className = "panel panel-info event_item";
+	panel.id 
 	heading = document.createElement("DIV");
-	heading.className = "panel-heading";
+	heading.className = "panel-heading event_header";
 	heading.innerHTML = event["name"];
 	panelBody = document.createElement("DIV");
-	panelBody.className = "panel-body";
+	panelBody.className = "panel-body event_body";
 	panelBody.innerHTML = event["description"];
 	
 	panel.appendChild(heading);
@@ -69,7 +73,6 @@ function createEventElement(event) {
 
 
 function addListeners(item) {
-	console.log("add listeners");
 		
 	item.addEventListener("touchstart", function(e) {
 		if (eventActive != null) {
@@ -96,28 +99,36 @@ function addListeners(item) {
 		adjustedX = x - touchOffsetX;
 		adjustedY = y - touchOffsetY + window.pageYOffset; //Add vertical scroll offset
 		
-		item.setAttribute("style", "top: " + adjustedY + "px; left: " + adjustedX + "px;");
+		item.style.top = adjustedY + "px";
+		item.style.left = adjustedX + "px";
+		//item.setAttribute("style", "top: " + adjustedY + "px; left: " + adjustedX + "px;");
 	});
 	
 	
 	item.addEventListener("touchend", function(e) {
+		item.style.top = null;
+		item.style.left = null;
+		//item.style.position = "static";
 		eventActive = null;
+		
 		//e.preventDefault();
-		var orig = e.originalEvent;
-		var x = orig.changedTouches[0].pageX;
-		var y = orig.changedTouches[0].pageY;
+		//var orig = e.originalEvent;
+		//var x = orig.changedTouches[0].pageX;
+		//var y = orig.changedTouches[0].pageY;		
+
 	});
 	
 	
 	item.addEventListener("touchcancel", function(e) {
+		item.style.position = "static";
 		eventActive = null;
+		item.setAttribute("style", "top: 0px; left: 0px;");
 
 		//e.preventDefault();
-		var orig = e.originalEvent;
-		var x = orig.changedTouches[0].pageX;
-		var y = orig.changedTouches[0].pageY;
+		//var orig = e.originalEvent;
+		//var x = orig.changedTouches[0].pageX;
+		//var y = orig.changedTouches[0].pageY;
+				
 	});
-	
-	
 	
 }
