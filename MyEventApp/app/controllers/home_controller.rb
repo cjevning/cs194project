@@ -24,8 +24,8 @@ class HomeController < ApplicationController
 			diff = (e.start-currTime)/(60*60)
 			if (diff > -1) 
 				for elem in 0..len
-					if (diff < timeIntervals[elem]) 
-						toPush = eventsGrouped[elem]
+					if (diff < @timeIntervals[elem]) 
+						toPush = @eventsGrouped[elem]
 						toPush.push(e)
 						break
 					end

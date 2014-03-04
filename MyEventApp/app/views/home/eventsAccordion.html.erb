@@ -71,64 +71,54 @@
 
 <div class="divisor">
 	<p class="diviP">Events</p>
- </div>
- <div class="panel-group" id="accordion2">
-<% @events.each do |event| %>
-<div class="panel panel-default accHeight">
-    <div class="panel-heading override">
-      <table class="override" data-toggle="collapse" data-parent="#accordion2" href="#collapses<%=event.id%>">
-        <tr class="override">
-          <td class="rowName override" id="rows<%=event.id%>">
-            <div class="override itemName">
-              <p class="diviP"><%= event.name %></p>
-            </div>
-          </td>
-          <td class="dropDown">
-          </td>
-        </tr>
-      </table>
-    </div>
-  <div id="collapses<%=event.id%>" class="panel-collapse collapse">
-    <div class="panel-body">
-      <p class="event_time">
-		<%= event.start.strftime("%l:%M%P") %> - <%= event.end.strftime("%l:%M%P") %>
-	  </p>
-	  <p><%= event.description %></p>
-    </div>
-  </div>
 </div>
-<% end %>
-</div>
-
+<% count = 0 %>
 <div class="divisor">
-	<p class="diviP">Events in 4 hours (proof of concept)</p>
- </div>
- <div class="panel-group" id="accordion3">
-<% @events.each do |event| %>
-<div class="panel panel-default accHeight">
-    <div class="panel-heading override">
-      <table class="override" data-toggle="collapse" data-parent="#accordion3" href="#collapser<%=event.id%>">
-        <tr class="override">
-          <td class="rowName override" id="rowr<%=event.id%>">
-            <div class="override itemName">
-              <p class="diviP"><%= event.name %></p>
-            </div>
-          </td>
-          <td class="dropDown">
-          </td>
-        </tr>
-      </table>
+  <p class="diviP">In the next hour:</p>
+</div>
+<% @eventsGrouped.each do |eventGroup| %>
+  <div class="panel-group" id="accordion2">
+    <% eventGroup.each do |event| %>
+    <div class="panel panel-default accHeight">
+      <div class="panel-heading override">
+        <table class="override" data-toggle="collapse" data-parent="#accordion2" href="#collapses<%=event.id%>">
+          <tr class="override">
+            <td class="rowName override" id="rows<%=event.id%>">
+              <div class="override itemName">
+                <p class="diviP"><%= event.name %></p>
+              </div>
+            </td>
+            <td class="dropDown">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="collapses<%=event.id%>" class="panel-collapse collapse">
+        <div class="panel-body">
+          <p class="event_time">
+            <%= event.start.strftime("%l:%M%P") %> - <%= event.end.strftime("%l:%M%P") %>
+          </p>
+          <p><%= event.description %></p>
+        </div>
+      </div>
     </div>
-  <div id="collapser<%=event.id%>" class="panel-collapse collapse">
-    <div class="panel-body">
-      <p class="event_time">
-		<%= event.start.strftime("%l:%M%P") %> - <%= event.end.strftime("%l:%M%P") %>
-	  </p>
-	  <p><%= event.description %></p>
-    </div>
+    <% end %>
+    <% count += 1 %>
   </div>
-</div>
-<% end %>
-</div>
+  <div class="divisor">
+    <% numHours = @timeIntervals[count] %>
+    <% if (numHours) %>
+    <% if (numHours <= 12) %>
+      <p class="diviP">In the next <%= @timeIntervals[count] %> hours:</p>
+    <% elsif (numHours <= 24) %>
+      <p class="diviP">In the next day:</p>
+    <% elsif (numHours <= 72) %>
+      <p class="diviP">In the next 3 days:</p>
+    <% else %>
+      <p class="diviP">In the future:</p>
+    <% end %>
+    <% end %>
+  </div>
+  <% end %>
 
 
