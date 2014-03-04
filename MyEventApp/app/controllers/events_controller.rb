@@ -9,12 +9,24 @@ class EventsController < ApplicationController
     @friends = user.friends
   end
 
+  #allow event creator to update flakes
+  #checks to see if latest event has expired, if so switch to events update
+  #else go home
+  def updateFlakes
+    @event.user = current_user
+    @recentEvent = Events.last.end.class
+    if(@recentEvent.end > DateTime.now)
+      redirect_to controller: 'invitations', action: 'updateFlakes'
+    else
+      redirect_to controller: 'home', action: 'index'
+  end
+
   def show
     if !Event.exists?(params[:id])
        redirect_to action: 'new' 
     end
     @event = Event.find(params[:id])
-    @invites = Invitations.where(event_id:@event.id)
+    @invites = Invitations.where(event_id:@event.id) 
   end
 
   def delete
