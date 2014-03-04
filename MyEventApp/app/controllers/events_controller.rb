@@ -15,10 +15,6 @@ class EventsController < ApplicationController
     end
     @event = Event.find(params[:id])
     @invites = Invitations.where(event_id:@event.id)
-    puts @event
-    @invites.each do |invite|
-        puts invite.user
-    end
   end
 
   def delete
@@ -36,43 +32,35 @@ class EventsController < ApplicationController
     @event.update_attributes(event_params)
   end
 
-def create
+  def create
   	@event = Event.new(event_params)
     @event.user = current_user
     @friends = params[:friends]
     token = session[:fb_access_token]
     if @event.save
-        flash[:success] = "Event Created!"
+      flash[:success] = "Event Created!"
         if !@friends.nil? then
-            @friends.each do |friend|
-                fInvite = User.find_by(uid: friend)
-                invite = Invitations.new
-                if fInvite == nil
-                    userFB = FbGraph::User.me(session[:fb_access_token]).fetch
-                    friendFB = userFB.friends.select { |friendEn| friendEn.identifier == friend}
-                    puts friendFB
-                    puts friendFB[0].name
-                    fInvite = User.new(:uid=>friend, :name=>friendFB[0].name)
-                    puts fInvite
-                    if fInvite.save!
-                       puts "SUCCESS!"
-                    end
-                end
-                invite.user = fInvite
-                invite.event = @event
-                invite.accepted = false
-                invite.seen = false
-                invite.created_at = Time.now
-                invite.save
+          @friends.each do |friend|
+            fInvite = User.find_by(uid: friend)
+            invite = Invitations.new
+            if fInvite == nil
+              fInvite = User.new(:uid=>friend, :name=>friend.name)
             end
+            invite.user = fInvite
+            invite.event = @event
+            invite.accepted = false
+            invite.seen = false
+            invite.created_at = Time.now
+            invite.save
+          end
         end
         flash[:notice] = "Event created!"
-        redirect_to :action => 'show', :id => @event.id
+        redirect_to :action => 'show', :id => @event.id 
     else
-        flash[:error] = "Event not created!"
-        redirect_to action: 'new'
+      flash[:error] = "Event not created!"
+      redirect_to action: 'new'
     end
-end
+  end
   private
     def event_params
         params.require(:event).permit(:user_id, :name, :start, :end, :description)
