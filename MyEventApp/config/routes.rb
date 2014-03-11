@@ -18,6 +18,7 @@ MyEventApp::Application.routes.draw do
   get 'calendar/events' => 'calendar#events'
   get 'calendar/event_details' => 'calendar#event_details'
   get 'invitations/show' => 'invitations#show'
+  get 'invitations/accept' => 'invitations#accept'
 
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events

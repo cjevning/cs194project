@@ -3,13 +3,12 @@
 	<% if @invitation.accepted %>
 		<span class="list-group-item list-group-item-success" > <span class="badge">Accepted</span>
 
-		<% elsif @invitation.seen and !@invitation.accepted%>
-		<span class="list-group-item list-group-item-warning ">    <span class="badge">Rejected</span>
-		<% else %>
-		<span class="list-group-item list-group-item-info"> <span class="badge">Not Seen</span>
-		<% end %>
-		<%= @invitation.user.name %> </span>
-<%= link_to 'delete', :controller => 'events', :action => 'delete', :id => @event.id, :class => "btn" %>
-
-<%= link_to 'edit', :controller=> 'events', :action => 'edit', :id => @event.id, :class => "btn" %>
+	<% elsif @invitation.seen and !@invitation.accepted%>
+		<span class="list-group-item list-group-item-warning ">
+		<%= link_to "Accept Invitation", :controller => "invitations", :action => "accept", :html => { :class => "btn btn-default invite_reply" } %>
+	<% else %>
+		<span class="list-group-item list-group-item-info">
+		<%= link_to "Accept Invitation", :controller => "invitations", :action => "accept", :html => { :class => "btn btn-default invite_reply" } %>
+	<% end %>
+	<%= @invitation.user.name %> </span>
 </div>

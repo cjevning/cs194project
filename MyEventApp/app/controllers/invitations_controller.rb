@@ -16,6 +16,12 @@ end
 
 
 
+def accept
+    
+end
+
+
+
 def update 
 	@invitation.update_attributes(invitations_params)
 
