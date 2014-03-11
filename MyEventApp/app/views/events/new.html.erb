@@ -1,72 +1,64 @@
 <h1> Create Event </h1>
 <%= form_for @event, {:class => "navbar-form"} do |form| %>
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">Name</span>
-		<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
-	</div>
 	
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">Start Time</span>
-		<div class="input-group">
-			<div class="input-group-btn">
-				<%= form.time_select :start, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+	<div id='event_creation_dialog'>
+		<div class="input-group new_event_form_line">
+			<span class="input-group-addon">Name</span>
+			<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
+		</div>
+		
+		<div class="input-group new_event_form_line">
+			<span class="input-group-addon">Start Time</span>
+			<div class="input-group">
+				<div class="input-group-btn">
+					<%= form.time_select :start, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">End Time</span>
-		<div class="input-group">
-			<div class="input-group-btn">
-				<%= form.time_select :end, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+		<div class="input-group new_event_form_line">
+			<span class="input-group-addon">End Time</span>
+			<div class="input-group">
+				<div class="input-group-btn">
+					<%= form.time_select :end, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+				</div>
 			</div>
 		</div>
+
+		<div class="input-group new_event_form_line">
+			<span class="input-group-addon">Description</span>
+			<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
+		</div>
+
+		<button type='button' class='btn btn-default' onclick='continue_dialog();'>
+			<span class="glyphicon glyphicon-chevron-right"></span>
+			<span class="glyphicon glyphicon-chevron-right"></span>
+			<span class="glyphicon glyphicon-chevron-right"></span>
+		</button>
+
 	</div>
 
+	<div id='friend_invite_dialog'>
+		<h3>Invite friends</h3>
+	    <input type="text" class="form-control" placeholder="Search" id='friend_searcher'> <br />
+		
+		<ul id='friend_list'>
+			<% @friends.each do |friend| %>
+				<li class='list-group-item friend' value=<%=friend.identifier%> > <%= friend.name%> </li> 
+			<% end %>
+		</ul>
 
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">Description</span>
-		<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
-	</div>
+		<script type="text/javascript">
+			var search_box = new searchable_list("friend_list", "friend_searcher", "friend");
+		</script>
 
-	<div class="input-group new_event_form_line">
-		<div id="friend_search">
-			<h3>Invite friends</h3>
-			<%= text_field_tag :search, params[:search], :class => "form-control" %>
+		<div class='btn-group'>
+			<button type='button' class='btn btn-default' onclick='back_dialog();'>
+				<span class="glyphicon glyphicon-chevron-left"></span>
+				<span class="glyphicon glyphicon-chevron-left"></span>
+				<span class="glyphicon glyphicon-chevron-left"></span>
+			</button>
 			<%= form.submit "Create Event", {:class => "btn btn-default submit_button"} %>
-			<div id="search_results"></div>
-			<script type="text/javascript">
-				new search_for_friends("search_results", "search", "/user/search");
-			</script>
-			
-		</div>
-		<div id="invited_friends">
-			<ul class="list-group" id="invited_list">
-							
-			</ul>
 		</div>
 	</div>
-	
-	<!--<div id="fb-root"></div>
-	<a href="#" id="invite_fb_friends">Invite your friends</a>
-	<script src="http://connect.facebook.net/en_US/all.js"></script>
-	<script>
-	$(function(){
-	    $("a#invite_fb_friends").click(function(){
-	        FB.init({
-	        appId: '462365563891934',
-	        status: true,
-	        cookie: false,
-	        // xfbml: true
-	        });
-
-		FB.ui({
-			method: 'apprequests',
-			message: 'conner has invite you to app'});
-		});
-	});
-	</script>
-	<% @friends.each do|friend| %>
-		<%= friend.name %> : <%= check_box_tag 'friends[]', friend.identifier %>
-	<% end %>-->
 <% end %>

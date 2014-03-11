@@ -28,6 +28,9 @@ class EventsController < ApplicationController
   end
 
   def update
+    if !Event.exists?(params[:id])
+      redirect_to action: 'new'
+    end
     @event = Event.find(event_params[:id])
     @event.update_attributes(event_params)
   end
@@ -45,6 +48,7 @@ class EventsController < ApplicationController
             invite = Invitations.new
             if fInvite == nil
               fInvite = User.new(:uid=>friend, :name=>friend.name)
+              fInvite.save
             end
             invite.user = fInvite
             invite.event = @event

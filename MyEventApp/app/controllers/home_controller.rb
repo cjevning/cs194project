@@ -10,7 +10,7 @@ class HomeController < ApplicationController
 	end
 
 	def eventsAccordion
-		@invitations = Invitations.where( user_id: current_user.id )
-		@events = Event.where( user_id: current_user.id )
+		@invitations = Invitations.where( user: current_user )
+		@events = Event.where( user: current_user )
 	end
 end

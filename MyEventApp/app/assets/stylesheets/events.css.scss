@@ -2,7 +2,38 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+//search input box
+#friend_searcher{
+	width:100%;
+	margin:auto;
+	height:10%;
+}
 
+//friend invite div
+#friend_invite_dialog {
+	position:absolute;
+	right:0px;
+	display:none;
+	height:100%;
+	margin:auto;
+}
+
+//ul list of friend names
+#friend_list{
+	height:60%;
+	margin:auto;
+	overflow:scroll;
+    overflow-x: hidden;
+}
+
+//event creation div
+#event_creation_dialog{
+	width:80%;
+	position:absolute;
+	left:0px;
+	height:100%;
+	overflow:scroll;
+}
 
 .event_li_top {
 	display: block;
