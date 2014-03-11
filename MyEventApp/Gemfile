@@ -37,6 +37,12 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'fb_graph'
 
+gem 'geo_ip', '~> 0.3.0'
+
+gem 'geokit', '~> 1.8.4'
+
+gem 'geokit-rails'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
