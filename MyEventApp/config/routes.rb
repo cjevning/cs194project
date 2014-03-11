@@ -1,5 +1,6 @@
 MyEventApp::Application.routes.draw do
  
+  get "calendar/day"
   root 'home#index'
 
   devise_for :user, :controllers => { :omniauth_callbacks => "user/omniauth_callbacks" }
@@ -14,6 +15,7 @@ MyEventApp::Application.routes.draw do
   get 'user/profile' => 'user#profile'
   get 'user/search' => 'user#search'
   get 'home/eventsAccordion' => 'home#eventsAccordion'
+  get 'calendar/events' => 'calendar#events'
 
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events

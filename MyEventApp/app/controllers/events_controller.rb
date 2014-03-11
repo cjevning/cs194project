@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   def index
-  	@events = Event.where( user_id: current_user.id )
+  	@events = Event.where( user: current_user )
   end
 
   def new
@@ -41,16 +41,20 @@ class EventsController < ApplicationController
       flash[:success] = "Event Created!"
         if !@friends.nil? then
           @friends.each do |friend|
+            fInvite = User.find_by(uid: friend)
             invite = Invitations.new
-            invite.user_id = friend
+            if fInvite == nil
+              fInvite = User.new(:uid=>friend, :name=>friend.name)
+            end
+            invite.user = fInvite
             invite.event = @event
             invite.accepted = false
             invite.seen = false
             invite.created_at = Time.now
-          
             invite.save
           end
         end
+        flash[:notice] = "Event created!"
         redirect_to :action => 'show', :id => @event.id 
     else
       flash[:error] = "Event not created!"
