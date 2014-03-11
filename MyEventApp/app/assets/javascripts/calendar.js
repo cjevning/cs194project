@@ -5,6 +5,7 @@ var touchOffsetY = 0;
 var timeSlots = new Array();
 var activeHour = null;
 var lastViewed = null;
+var eventViewMode = false;
 
 // Some swipe detection code from http://www.javascriptkit.com/javatutors/touchevents2.shtml
 var startX,
@@ -69,10 +70,21 @@ function processEvent(event) {
 function createEventElement(event) {
 	panel = document.createElement("DIV");
 	panel.className = "panel panel-info event_item";
-	panel.id 
+	panel.id = "event_panel_" + event["id"];
+	
 	heading = document.createElement("DIV");
 	heading.className = "panel-heading event_header";
-	heading.innerHTML = event["name"];
+	
+	panelTitle = document.createElement("SPAN");
+	panelTitle.className = "panel-title event_title";
+	panelTitle.innerHTML = event["name"];
+	heading.appendChild(panelTitle);
+	
+	invitesBadge = document.createElement("SPAN");
+	invitesBadge.className = "badge pull-right invite_indicator";
+	invitesBadge.innerHTML = event["num_invites"];
+	heading.appendChild(invitesBadge);
+	
 	panelBody = document.createElement("DIV");
 	panelBody.className = "panel-body event_body";
 	panelBody.innerHTML = event["description"];
@@ -172,11 +184,16 @@ function handleswipe(item, dir) {
 
 
 
+/*
+  These event handlers are called when the app is in calendar mode.
+ */
+
 function calClick(e) {
 	item = e.target;
-	console.log(item);
-	console.log(item.className);
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	
+	eventViewMode = true;
+	
+	while (item.className != "panel panel-info event_item") item = item.parentElement;
 	item.setAttribute("style", "z-index: 1031;");
 	item.style.left = item.getBoundingClientRect().left + "px";
 	item.style.top = (item.getBoundingClientRect().top + window.pageYOffset) + "px";
@@ -194,6 +211,8 @@ function calClick(e) {
 	addEventTouchListeners(item);
 	
 	lastViewed = item;
+	
+	requestEventData(item);
 }
 
 
@@ -327,12 +346,70 @@ function restoreLastViewed() {
 
 
 
+function requestEventData(eventElement) {
+	var eventID = eventElement.id.split("_")[2];
+	var eventDetailsXhr = new XMLHttpRequest();
+	eventDetailsXhr.onreadystatechange = eventDetailsXhrHandler;
+	eventDetailsXhr.open("GET", "event_details?id=" + eventID);
+	eventDetailsXhr.send(null);
+	
+	function eventDetailsXhrHandler() {
+		if (eventDetailsXhr.readyState != 4) {
+			return;
+		}
+		if (this.status != 200) {
+			return;
+		} else {
+			if (eventViewMode == false) return;
+			var eventDetails = JSON.parse(eventDetailsXhr.responseText);
+			processEventDetails(eventDetails);
+		}
+	}
+}
+
+
+
+function processEventDetails(eventDetails) {
+	console.log(eventDetails);
+	var invitesArray = eventDetails["invitations"];
+	listWrapper = document.createElement("DIV");
+	listWrapper.className = "list-group";
+	for (var invite in invitesArray) {
+		var inviteCopy = invitesArray[invite];
+		
+		wrapper = document.createElement("DIV");
+		if (inviteCopy["accepted"] == true) {
+			wrapper.className = "list-group-item list-group-item-success";
+		} else if (inviteCopy["seen"] == true) {
+			wrapper.className = "list-group-item list-group-item-danger";
+		} else {
+			wrapper.className = "list-group-item list-group-item-warning";
+		}
+		
+		circleDiv = document.createElement("DIV");
+		circleDiv.className = "profile_circle";
+		circleDiv.style.background = "url(" + inviteCopy["picture_url"] + ") no-repeat";
+		wrapper.appendChild(circleDiv);
+		
+		nameLabel = document.createElement("P");
+		nameLabel.className = "profile_circle_label";
+		nameLabel.innerHTML = inviteCopy["name"];
+		wrapper.appendChild(nameLabel);
+		
+		listWrapper.appendChild(wrapper);
+	}
+	lastViewed.children[1].appendChild(listWrapper);
+}
+
+
+
 
 function eventClick(e) {
 	var item = e.target;
-	console.log(item);
-	console.log(item.className);
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	
+	eventViewMode = false;
+	
+	while (item.className != "panel panel-info event_item") item = item.parentElement;
 	//item.style.left = item.getBoundingClientRect().left + "px";
 	//item.style.top = (item.getBoundingClientRect().top + window.pageYOffset) + "px";
 	
@@ -347,6 +424,10 @@ function eventClick(e) {
 	
 	var $description = $(item.children[1]);
 	$description.animate({fontSize:"14px"}, "fast", "linear", restoreLastViewed);
+	
+	while (item.children[1].childNodes.length > 1) {
+		item.children[1].removeChild(item.children[1].lastChild);
+	}
 		
 	removeEventTouchListeners(item);
 	addCalTouchListeners(item);
@@ -355,12 +436,24 @@ function eventClick(e) {
 
 
 
+/*
+  These event handlers are called when an event is being viewed in detail.
+ */
+
+function eventTouchStart(e) {
+	//e.preventDefault();
+}
+
+
+function eventTouchMove(e) {
+	e.preventDefault();
+}
 
 
 function addEventTouchListeners(item) {
 	item.addEventListener('click', eventClick);
-	//item.addEventListener('touchstart', eventTouchStart);
-	//item.addEventListener('touchmove', eventTouchMove);
+	item.addEventListener('touchstart', eventTouchStart);
+	item.addEventListener('touchmove', eventTouchMove);
 	//item.addEventListener('touchend', eventTouchEnd);
 	//item.addEventListener('touchcancel', eventTouchCancel);
 }
@@ -368,8 +461,8 @@ function addEventTouchListeners(item) {
 
 function removeEventTouchListeners(item) {
 	item.removeEventListener('click', eventClick);
-	//item.removeEventListener('touchstart', eventTouchStart);
-	//item.removeEventListener('touchmove', eventTouchMove);
+	item.removeEventListener('touchstart', eventTouchStart);
+	item.removeEventListener('touchmove', eventTouchMove);
 	//item.removeEventListener('touchend', eventTouchEnd);
 	//item.removeEventListener('touchcancel', eventTouchCancel);
 }

@@ -44,7 +44,11 @@ class EventsController < ApplicationController
             fInvite = User.find_by(uid: friend)
             invite = Invitations.new
             if fInvite == nil
-              fInvite = User.new(:uid=>friend, :name=>friend.name)
+              matchingFriend = FbGraph::User.fetch(friend, access_token: token)
+              fInvite = User.new(:uid=>matchingFriend.identifier, :name=>matchingFriend.name, :email=>matchingFriend.email)
+              fInvite.password = "hippopotamus72"
+              fInvite.email = "crocodile" + matchingFriend.identifier + "@unregistered.com"
+              fInvite.save!
             end
             invite.user = fInvite
             invite.event = @event
@@ -63,6 +67,6 @@ class EventsController < ApplicationController
   end
   private
     def event_params
-        params.require(:event).permit(:user_id, :name, :start, :end, :description)
+        params.require(:event).permit(:user_id, :name, :start, :end, :description, :public, :allows_fof)
     end
 end

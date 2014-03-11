@@ -28,6 +28,20 @@
 		<span class="input-group-addon">Description</span>
 		<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
 	</div>
+	
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">
+			<%= form.check_box :public %>
+		</span>
+		<span class="form-control ignore_form_background">Public - all your friends can see this</span>
+	</div>
+	
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">
+			<%= form.check_box :allows_fof %>
+		</span>
+		<span class="form-control ignore_form_background">Include friends of friends - expand your social circle!</span>
+	</div>
 
 	<div class="input-group new_event_form_line">
 		<div id="friend_search">
