@@ -5,4 +5,16 @@
 
 .btn.invite_reply {
 	float: right;
+	display: inline;
+}
+
+
+.invite_reply {
+	display: inline;
+}
+
+
+.list-group-item-warning.accept_btn {
+	display: inline-table;
+	width: 100%;
 }

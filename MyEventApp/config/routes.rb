@@ -17,6 +17,7 @@ MyEventApp::Application.routes.draw do
   get 'home/eventsAccordion' => 'home#eventsAccordion'
   get 'calendar/events' => 'calendar#events'
   get 'calendar/event_details' => 'calendar#event_details'
+  get 'calendar/accept' => 'calendar#accept'
   get 'invitations/show' => 'invitations#show'
   get 'invitations/accept' => 'invitations#accept'
 

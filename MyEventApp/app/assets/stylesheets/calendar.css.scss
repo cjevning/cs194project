@@ -12,8 +12,8 @@
 
 .event_item {
 	position: absolute;
-	height: 72px;
-	max-width: 82%;
+	height: 74px;
+	width: 82%;
 	z-index: 11;
 }
 
@@ -23,7 +23,6 @@
 	overflow: hidden;
 	width: 100%;
 	white-space: nowrap;
-	display: inline-block;
 	font-size: 14px;
 }
 
@@ -36,10 +35,11 @@
 
 
 .panel-body.event_body {
-	padding: 7px 10px;
+	padding: 5px 10px;
 	overflow: hidden;
-	max-width: 100%;
+	width: 100%;
 	white-space: nowrap;
+	display: inline-block;
 }
 
 
@@ -47,6 +47,25 @@
 	
 }
 
+
+.panel_body_text {
+	display: inline-block;
+	max-width: 83%;
+	overflow-x: hidden;
+}
+
+
+.owner_thumb {
+	width: 34px;
+	height: 34px;
+	border-radius: 17x;
+	-webkit-border-radius: 17px;
+	-moz-border-radius: 17px;
+	background-size: 100% auto;
+	display: inline;
+	float: right;
+	margin-top: -2px;
+}
 
 
 .hour_row {
@@ -122,7 +141,50 @@
 }
 
 
+.owner_profile_circle {
+	width: 50px;
+	height: 50px;
+	border-radius: 25px;
+	-webkit-border-radius: 25px;
+	-moz-border-radius: 25px;
+	float: right;
+	margin-right: 3px;
+}
+
+
 .profile_circle_label {
 	font-size: 10px;
 	margin: 0px;
+}
+
+
+#host_label {
+	display: inline;
+	float: right;
+}
+
+
+.body_header {
+	width: 100%;
+	display: inline-block;
+}
+
+
+.event_detail_body {
+	padding: 5px 10px;
+}
+
+
+.well.featured_person_wrapper {
+	float: right;
+}
+
+
+.event_description_text {
+	padding-right: 5px;
+}
+
+
+#detail_btn_group {
+	margin-bottom: 10px;
 }
