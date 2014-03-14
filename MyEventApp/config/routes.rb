@@ -23,6 +23,7 @@ MyEventApp::Application.routes.draw do
 
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events
+  get 'calendar/feed/:id/feed' => 'calendar#feed', :as => 'cal_feed_path'
   
 
   # The priority is based upon order of creation: first created -> highest priority.

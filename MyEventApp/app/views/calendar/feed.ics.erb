@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+METHOD:PUBLISH
+VERSION:2.0
+PRODID:-//Blackbriar/Time-Off//EN
+X-WR-CALNAME:Blackbriar
+CALSCALE:GERGORIAN
+<% @events.each do |event| %>
+BEGIN:VEVENT
+UID:<%=event.id%>
+SUMMARY:<%= event.name %>
+DTSTART:<%= event.start.strftime("%Y%m%dT%H%M%SZ") %>
+DTEND:<%= event.end.strftime("%Y%m%dT%H%M%SZ") %>
+DTSTAMP:<%=Time.now.strftime("%Y%m%dT%H%M%SZ")%>
+END:VEVENT
+<% end %>
+<% @invitations.each do |invitation| %>
+<% if invitation.accepted? %>
+BEGIN:VEVENT
+UID:<%=invitation.event.id%>
+SUMMARY:<%= invitation.event.name %>
+DTSTART:<%= invitation.event.start.strftime("%Y%m%dT%H%M%SZ") %>
+DTEND:<%= invitation.event.end.strftime("%Y%m%dT%H%M%SZ") %>
+DTSTAMP:<%=Time.now.strftime("%Y%m%dT%H%M%SZ")%>
+END:VEVENT
+<% end %>
+<% end %>
+END:VCALENDAR

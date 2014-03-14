@@ -132,5 +132,13 @@ class CalendarController < ApplicationController
     end
 
 
+    def feed
+        @user = User.find( params[:id] )
+        @events = Event.where( user: @user )
+        @invitations = Invitations.where( user: @user )
+        respond_to do |format|
+            format.ics
+        end
+    end
 
 end
