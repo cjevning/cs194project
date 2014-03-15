@@ -2,9 +2,10 @@
 var eventActive = null;
 var touchOffsetX = 0;
 var touchOffsetY = 0;
-var timeSlots = new Array();
+var timeSlots = new Array(24);
 var activeHour = null;
 var lastViewed = null;
+var eventViewMode = false;
 
 // Some swipe detection code from http://www.javascriptkit.com/javatutors/touchevents2.shtml
 var startX,
@@ -17,6 +18,16 @@ var startX,
 	restraint = 100,
 	allowedTime = 300,
 	elapsedTime
+
+
+function findEventRecordById(id)
+{
+	for (var i = 0; i < timeSlots.length; i++) {
+		if (timeSlots[i] != null) {
+			if (timeSlots[i].id == id) return timeSlots[i];
+		}
+	}
+}
 
 
 function loadEvents() {
@@ -50,32 +61,66 @@ function sendEventRequest() {
 
 
 
+function sendEventAcceptance(id) {
+	var acceptXhr = new XMLHttpRequest();
+	acceptXhr.onreadystatechange = acceptXhrHandler;
+	acceptXhr.open("GET", "accept?id=" + id);
+	acceptXhr.send(null);
+
+	function acceptXhrHandler() {
+		if (acceptXhr.readyState != 4) {
+			return;
+		}
+		if (this.status != 200) {
+			return;
+		} else {
+			console.log(acceptXhr.responseText);
+		}
+	}
+}
+
+
+
 function processEvent(event) {
 	dateSeconds = event["start_in_seconds"];
 	date = new Date(Number(dateSeconds)*1000);
-	//if (timeSlots[date.getHours()] != null) {
-	//	return;
-	//}
+	if (timeSlots[date.getHours()] != null) {
+		return;
+	}
 	var hourContainer = document.getElementById('hour' + date.getUTCHours());
 
 	eventElement = createEventElement(event);
 	hourContainer.appendChild(eventElement);
-	addCalTouchListeners(eventElement);
-	timeSlots[date.getHours()] = eventElement;
+	addCalTouchListeners(eventElement, event["status"]);
+	eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: date.getHours()};
+	timeSlots[date.getHours()] = eventRecord;
 }
 
 
 
 function createEventElement(event) {
 	panel = document.createElement("DIV");
-	panel.className = "panel panel-info event_item";
-	panel.id 
+	if (event["status"] == "owner" || event["status"] == "invited_accepted") {
+		panel.className = "panel panel-primary event_item";
+	} else {
+		panel.className = "panel panel-info event_item";
+	}
+	panel.id = "event_panel_" + event["id"];
+	
 	heading = document.createElement("DIV");
 	heading.className = "panel-heading event_header";
-	heading.innerHTML = event["name"];
-	panelBody = document.createElement("DIV");
-	panelBody.className = "panel-body event_body";
-	panelBody.innerHTML = event["description"];
+	
+	panelTitle = document.createElement("SPAN");
+	panelTitle.className = "panel-title event_title";
+	panelTitle.innerHTML = event["name"];
+	heading.appendChild(panelTitle);
+	
+	invitesBadge = document.createElement("SPAN");
+	invitesBadge.className = "badge pull-right invite_indicator";
+	invitesBadge.innerHTML = event["num_invites"];
+	heading.appendChild(invitesBadge);
+	
+	panelBody = renderPanelBody(event);
 	
 	panel.appendChild(heading);
 	panel.appendChild(panelBody);
@@ -83,6 +128,25 @@ function createEventElement(event) {
 	//eventRecord = {eventElement: event, top: 0, left: 0};
 	return panel;
 
+}
+
+
+
+function renderPanelBody(event) {
+	panelBody = document.createElement("DIV");
+	panelBody.className = "panel-body event_body";
+	panelBody.id = "panel_body_" + event["id"];
+	panelBody.innerHTML = "<div class='panel_body_text'>" + event["description"] + "</div>";
+	
+	if (event["status"] != "owner") {
+		circleDiv = document.createElement("DIV");
+		circleDiv.className = "owner_thumb";
+		circleDiv.style.background = "url(" + event["owner_pic"] + ") no-repeat";
+		circleDiv.style.backgroundSize = "100% auto";
+		panelBody.appendChild(circleDiv);
+	}
+	
+	return panelBody;
 }
 
 
@@ -157,7 +221,7 @@ function handleswipe(item, dir) {
 		return 1;
 	}
 	if (dir == 'left') {
-		eventAccepted(item);
+		acceptEvent(item.id.split("_")[2]);
 		return 2;
 	}
 	if (dir == 'up') {
@@ -172,11 +236,16 @@ function handleswipe(item, dir) {
 
 
 
+/*
+  These event handlers are called when the app is in calendar mode.
+ */
+
 function calClick(e) {
 	item = e.target;
-	console.log(item);
-	console.log(item.className);
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	
+	eventViewMode = true;
+	
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 	item.setAttribute("style", "z-index: 1031;");
 	item.style.left = item.getBoundingClientRect().left + "px";
 	item.style.top = (item.getBoundingClientRect().top + window.pageYOffset) + "px";
@@ -194,13 +263,18 @@ function calClick(e) {
 	addEventTouchListeners(item);
 	
 	lastViewed = item;
+	
+	//requestEventData(item);
+	eventID = item.id.split("_")[2];
+	eventRecord = findEventRecordById(eventID);
+	processEventDetails(eventRecord.element, eventRecord.object);
 }
 
 
 
 function calTouchStart(e) {
 	item = e.target;
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 	if (eventActive != null) {
 		return;
 	}
@@ -225,7 +299,7 @@ function calTouchStart(e) {
 
 function calTouchMove(e) {
 	item = e.target;
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 	if (eventActive == null || eventActive != item) {
 		return;
 	}
@@ -246,7 +320,7 @@ function calTouchMove(e) {
 
 function calTouchEnd(e) {
 	item = e.target;
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 
 	//e.preventDefault();
 	var x = e.changedTouches[0].pageX;
@@ -272,7 +346,7 @@ function calTouchEnd(e) {
 	}
 	
 	if (x < 20) {
-		eventAccepted(item);
+		acceptEvent(item.id.split("_")[2]);
 		return;
 	}
 	
@@ -289,7 +363,7 @@ function calTouchEnd(e) {
 
 function calTouchCancel(e) {
 	item = e.target;
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 	//item.style.position = "static";
 	eventActive = null;
 	item.setAttribute("style", "top: 0px; left: 0px;");
@@ -301,12 +375,14 @@ function calTouchCancel(e) {
 }
 
 
-function addCalTouchListeners(item) {
+function addCalTouchListeners(item, status) {
 	item.addEventListener('click', calClick);
-	item.addEventListener('touchstart', calTouchStart);
-	item.addEventListener('touchmove', calTouchMove);
-	item.addEventListener('touchend', calTouchEnd);
-	item.addEventListener('touchcancel', calTouchCancel);
+	if (status != "owner") {
+		item.addEventListener('touchstart', calTouchStart);
+		item.addEventListener('touchmove', calTouchMove);
+		item.addEventListener('touchend', calTouchEnd);
+		item.addEventListener('touchcancel', calTouchCancel);
+	}
 }
 
 
@@ -327,12 +403,184 @@ function restoreLastViewed() {
 
 
 
+function requestEventData(eventElement) {
+	var eventID = eventElement.id.split("_")[2];
+	var eventDetailsXhr = new XMLHttpRequest();
+	eventDetailsXhr.onreadystatechange = eventDetailsXhrHandler;
+	eventDetailsXhr.open("GET", "event_details?id=" + eventID);
+	eventDetailsXhr.send(null);
+	
+	function eventDetailsXhrHandler() {
+		if (eventDetailsXhr.readyState != 4) {
+			return;
+		}
+		if (this.status != 200) {
+			return;
+		} else {
+			if (eventViewMode == false) return;
+			var eventDetails = JSON.parse(eventDetailsXhr.responseText);
+			processEventDetails(eventDetails);
+		}
+	}
+}
+
+
+function acceptEvent(e) {
+	console.log("Accept!");
+	console.log(e);
+	
+	sendEventAcceptance(e);
+	
+	if (eventViewMode) {
+		// Do something flashy
+		
+		// Accept on server
+		
+	} else {
+		// Overlay flash?
+		
+		// Accept on server
+	}
+}
+
+
+function rejectEvent(e) {
+	console.log("Reject!");
+	console.log(e);
+}
+
+
+function maybeEvent(e) {
+	console.log("Maybe!");
+	console.log(e);
+}
+
+
+
+function getDetailButtonGroup(id) {
+	wrapper = document.createElement("DIV");
+	wrapper.className = "btn-group";
+	
+	attend = document.createElement("button");
+	attend.className = "btn btn-success";
+	attend.type = "button";
+	attend.innerHTML = "Attend";
+	attend.onclick = function () { acceptEvent(id) };
+	wrapper.appendChild(attend);
+	
+	maybe = document.createElement("button");
+	maybe.className = "btn btn-warning";
+	maybe.type = "button";
+	maybe.innerHTML = "Maybe";
+	maybe.onclick = function () { maybeEvent(id) };
+	wrapper.appendChild(maybe);
+	
+	reject = document.createElement("button");
+	reject.className = "btn btn-danger";
+	reject.type = "button";
+	reject.innerHTML = "Reject";
+	reject.onclick = function () { rejectEvent(id) };
+	wrapper.appendChild(reject);
+	
+	return wrapper
+}
+
+
+
+function processEventDetails(eventElement, eventDetails) {
+	panelBody = document.getElementById("panel_body_" + eventDetails["id"]);
+	panelBodyParent = panelBody.parentNode;
+	panelBody.parentNode.removeChild(panelBody);
+	
+	eventBody = renderEventBody(eventDetails);
+	panelBodyParent.appendChild(eventBody);
+	
+}
+
+
+function renderEventBody(event) {
+	eventBody = document.createElement("DIV");
+	eventBody.className = "event_detail_body";
+	eventBody.id = "event_body_" + event["id"];
+	
+	header = document.createElement("DIV");
+	header.className = "body_header";
+	
+	if (event["status"] != "owner") {
+		hostWrapper = document.createElement("DIV");
+		hostWrapper.className = "well well-sm featured_person_wrapper";
+		
+		// Add Host label
+		hostLabel = document.createElement("DIV");
+		hostLabel.id = "host_label";
+		hostLabel.innerHTML = event["owner_name"];
+		hostWrapper.appendChild(hostLabel);
+		
+		// Add Host picture
+		circleDiv = document.createElement("DIV");
+		circleDiv.className = "owner_profile_circle";
+		circleDiv.style.background = "url(" + event["owner_pic"] + ") no-repeat";
+		circleDiv.style.backgroundSize = "100% auto";
+		hostWrapper.appendChild(circleDiv);
+		header.appendChild(hostWrapper);
+	}
+	
+	description = document.createElement("DIV");
+	description.className = "event_description_text";
+	description.innerHTML = "<p>" + event["description"] + "</p>";
+	header.appendChild(description);
+	
+	eventBody.appendChild(header);
+	
+	// Add action buttons
+	detailButtonGroup = getDetailButtonGroup(event["id"]);
+	detailButtonGroup.id = "detail_btn_group";
+	eventBody.appendChild(detailButtonGroup);
+	
+	var invitesArray = event["invitations"];
+	listWrapper = document.createElement("DIV");
+	listWrapper.className = "list-group";
+	listWrapper.id = "invites_list";
+	
+	// Add invitations
+	for (var invite in invitesArray) {
+		var inviteCopy = invitesArray[invite];
+		
+		wrapper = document.createElement("DIV");
+		if (inviteCopy["accepted"] == true) {
+			wrapper.className = "list-group-item list-group-item-success";
+		} else if (inviteCopy["seen"] == true) {
+			wrapper.className = "list-group-item list-group-item-danger";
+		} else {
+			wrapper.className = "list-group-item list-group-item-warning";
+		}
+		
+		circleDiv = document.createElement("DIV");
+		circleDiv.className = "profile_circle";
+		circleDiv.style.background = "url(" + inviteCopy["picture_url"] + ") no-repeat";
+		wrapper.appendChild(circleDiv);
+		
+		nameLabel = document.createElement("P");
+		nameLabel.className = "profile_circle_label";
+		nameLabel.innerHTML = inviteCopy["name"];
+		wrapper.appendChild(nameLabel);
+		
+		listWrapper.appendChild(wrapper);
+	}
+	eventBody.appendChild(listWrapper);
+	
+	return eventBody;
+}
+
+
 
 function eventClick(e) {
 	var item = e.target;
 	console.log(item);
-	console.log(item.className);
-	if (item.className != "panel panel-info event_item") item = item.parentElement;
+	
+	eventViewMode = false;
+	
+	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
 	//item.style.left = item.getBoundingClientRect().left + "px";
 	//item.style.top = (item.getBoundingClientRect().top + window.pageYOffset) + "px";
 	
@@ -347,6 +595,12 @@ function eventClick(e) {
 	
 	var $description = $(item.children[1]);
 	$description.animate({fontSize:"14px"}, "fast", "linear", restoreLastViewed);
+	
+	
+	eventID = item.id.split("_")[2];
+	eventRecord = findEventRecordById(eventID);
+	restorePanelBody(eventRecord.element, eventRecord.object);
+	
 		
 	removeEventTouchListeners(item);
 	addCalTouchListeners(item);
@@ -354,13 +608,39 @@ function eventClick(e) {
 
 
 
+function restorePanelBody(eventElement, eventDetails) {
+	eventBody = document.getElementById("event_body_" + eventDetails["id"]);
+	var eventBodyParent = null;
+	if (eventBody != null) {
+		eventBodyParent = eventBody.parentNode;
+		eventBodyParent.removeChild(eventBody);
+	}
+	if (eventBodyParent != null) {
+		panelBody = renderPanelBody(eventDetails);
+		eventBodyParent.appendChild(panelBody);
+	}
+}
 
+
+
+/*
+  These event handlers are called when an event is being viewed in detail.
+ */
+
+function eventTouchStart(e) {
+	//e.preventDefault();
+}
+
+
+function eventTouchMove(e) {
+	e.preventDefault();
+}
 
 
 function addEventTouchListeners(item) {
 	item.addEventListener('click', eventClick);
-	//item.addEventListener('touchstart', eventTouchStart);
-	//item.addEventListener('touchmove', eventTouchMove);
+	item.addEventListener('touchstart', eventTouchStart);
+	item.addEventListener('touchmove', eventTouchMove);
 	//item.addEventListener('touchend', eventTouchEnd);
 	//item.addEventListener('touchcancel', eventTouchCancel);
 }
@@ -368,8 +648,8 @@ function addEventTouchListeners(item) {
 
 function removeEventTouchListeners(item) {
 	item.removeEventListener('click', eventClick);
-	//item.removeEventListener('touchstart', eventTouchStart);
-	//item.removeEventListener('touchmove', eventTouchMove);
+	item.removeEventListener('touchstart', eventTouchStart);
+	item.removeEventListener('touchmove', eventTouchMove);
 	//item.removeEventListener('touchend', eventTouchEnd);
 	//item.removeEventListener('touchcancel', eventTouchCancel);
 }
