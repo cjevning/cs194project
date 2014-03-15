@@ -2,6 +2,12 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+//event creation button group
+#event_create_buttons{
+	width:100%;
+	height:10%;
+}
+
 //search input box
 #friend_searcher{
 	width:100%;
@@ -20,6 +26,7 @@
 
 //ul list of friend names
 #friend_list{
+	width:100%;
 	height:60%;
 	margin:auto;
 	overflow:scroll;

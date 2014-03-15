@@ -41,7 +41,17 @@ function searchable_list(list_id, search_id, elem){
 
     $('#'+this.search_id).change( function(){
         console.log($(this));
-        obj.search_for($("#"+$(this).search_id).value);
+        var value = $("#"+$(this).search_id).value;
+        //reset list of items to default
+        if(value.length == 0){
+            var items = document.getElementsByClassName(this.elem);
+            for(var i = 0; i < items.length; ++i){
+                item = items[i];
+                item.animate({top:"0px", bottom:"0px"});
+            }
+        } else {
+            obj.search_for($("#"+$(this).search_id).value);            
+        }
     });
 }
 

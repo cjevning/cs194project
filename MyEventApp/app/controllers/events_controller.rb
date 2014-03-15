@@ -4,9 +4,11 @@ class EventsController < ApplicationController
   end
 
   def new
+    
     @event = Event.new
     user = FbGraph::User.me(session[:fb_access_token]).fetch
-    @friends = user.friends
+    @friends = user.friends.order("name ASC").all;
+
   end
 
   def show
