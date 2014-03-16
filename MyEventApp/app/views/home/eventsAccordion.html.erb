@@ -16,7 +16,7 @@
         <tr class="override">
           <td class="rowName override" id="row<%=invite.id%>">
             <div class="override itemName">
-              <p class="diviP"><%= invite.name %></p>
+              <p class="diviP"><%= invite.event.name %></p>
             </div>
           </td>
           <td class="dropDown">
@@ -28,9 +28,9 @@
   <div id="collapse<%=invite.id%>" class="panel-collapse collapse">
     <div class="panel-body">
       <p class="event_time">
-		<%= invite.start.strftime("%l:%M%P") %> - <%= invite.end.strftime("%l:%M%P") %>
+		<%= invite.event.start.strftime("%l:%M%P") %> - <%= invite.event.end.strftime("%l:%M%P") %>
 	  </p>
-	  <%= invite.description %>
+	  <%= invite.event.description %>
     </div>
   </div>
 <% end %>

@@ -11,7 +11,13 @@ class HomeController < ApplicationController
 
 	def eventsAccordion
 		user_ip = request.remote_ip
-		@location = IpGeocoder.geocode(user_ip)
+		location = GeoLocation.find(user_ip)
+		lat = location[:latitude]
+		lng = location[:longitude]
+
+		
+
+
 		@timeIntervals = [1,3,6,12,24,72,1073741823]
 		@invitations = Invitations.where( user_id: current_user.id )
 		@events = Event.where( user_id: current_user.id )

@@ -43,6 +43,10 @@ gem 'geokit', '~> 1.8.4'
 
 gem 'geokit-rails'
 
+gem 'geo_location'
+
+gem 'nokogiri'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

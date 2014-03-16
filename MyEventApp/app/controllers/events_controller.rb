@@ -1,4 +1,5 @@
 class EventsController < ApplicationController
+
   def index
   	@events = Event.where( user: current_user )
   end
@@ -33,6 +34,7 @@ class EventsController < ApplicationController
   end
 
   def create
+    puts event_params
   	@event = Event.new(event_params)
     @event.user = current_user
     @friends = params[:friends]
@@ -63,6 +65,6 @@ class EventsController < ApplicationController
   end
   private
     def event_params
-        params.require(:event).permit(:user_id, :name, :start, :end, :description)
+        params.require(:event).permit(:user_id, :name, :start, :end, :description, :lat, :lng)
     end
 end
