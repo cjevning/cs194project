@@ -16,9 +16,16 @@ MyEventApp::Application.routes.draw do
   get 'user/search' => 'user#search'
   get 'home/eventsAccordion' => 'home#eventsAccordion'
   get 'calendar/events' => 'calendar#events'
+  get 'calendar/event_details' => 'calendar#event_details'
+  get 'calendar/accept' => 'calendar#accept'
+  get 'calendar/reject' => 'calendar#reject'
+  get 'calendar/maybe' => 'calendar#maybe'
+  get 'invitations/show' => 'invitations#show'
+  get 'invitations/accept' => 'invitations#accept'
 
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events
+  get 'calendar/feed/:id/feed' => 'calendar#feed', :as => 'cal_feed_path'
   
 
   # The priority is based upon order of creation: first created -> highest priority.
