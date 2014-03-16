@@ -20,14 +20,24 @@ var startX,
 	elapsedTime
 
 
-function findEventRecordById(id)
-{
+function findEventRecordById(id) {
 	for (var i = 0; i < timeSlots.length; i++) {
 		if (timeSlots[i] != null) {
 			if (timeSlots[i].id == id) return timeSlots[i];
 		}
 	}
 }
+
+
+
+function pushEventToTimeSlot(slotNumber, event, eventElement) {
+	if (timeSlots[slotNumber] == null) {
+		maybes = new Array();
+		timeSlots[slotNumber] = {display: null, maybe: maybes}
+	}
+	eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: slotNumber};
+}
+
 
 
 function loadEvents() {
@@ -53,7 +63,7 @@ function sendEventRequest() {
 			console.log(eventArray);
 			for (var event in eventArray) {
 				var eventCopy = eventArray[event];
-				processEvent(eventCopy);
+				if (eventCopy != null) processEvent(eventCopy);
 			}
 		}
 	}
@@ -75,6 +85,65 @@ function sendEventAcceptance(id) {
 			return;
 		} else {
 			console.log(acceptXhr.responseText);
+			if (acceptXhr.responseText != "-1") {
+				updateLocalEventModel(acceptXhr.responseText, "accept");
+			}
+		}
+	}
+}
+
+
+function sendEventRejection(id) {
+	var rejectXhr = new XMLHttpRequest();
+	rejectXhr.onreadystatechange = rejectXhrHandler;
+	rejectXhr.open("GET", "reject?id=" + id);
+	rejectXhr.send(null);
+
+	function rejectXhrHandler() {
+		if (rejectXhr.readyState != 4) {
+			return;
+		}
+		if (this.status != 200) {
+			return;
+		} else {
+			console.log(rejectXhr.responseText);
+			var reply = JSON.parse(rejectXhr.responseText);
+			message = reply["rejectID"]
+			if (message != "-1") {
+				updateLocalEventModel(message, "reject");
+			}
+			if (reply["replacementEvent"] != null) {
+				processEvent(reply["replacementEvent"]);
+			}
+		}
+	}
+}
+
+
+
+
+function sendEventMaybe(id) {
+	var maybeXhr = new XMLHttpRequest();
+	maybeXhr.onreadystatechange = maybeXhrHandler;
+	maybeXhr.open("GET", "maybe?id=" + id);
+	maybeXhr.send(null);
+
+	function maybeXhrHandler() {
+		if (maybeXhr.readyState != 4) {
+			return;
+		}
+		if (this.status != 200) {
+			return;
+		} else {
+			console.log(maybeXhr.responseText);
+			var reply = JSON.parse(maybeXhr.responseText);
+			message = reply["maybeID"]
+			if (message != "-1") {
+				updateLocalEventModel(message, "maybe");
+			}
+			if (reply["replacementEvent"] != null) {
+				processEvent(reply["replacementEvent"]);
+			}
 		}
 	}
 }
@@ -82,14 +151,16 @@ function sendEventAcceptance(id) {
 
 
 function processEvent(event) {
+	console.log(event);
 	dateSeconds = event["start_in_seconds"];
 	date = new Date(Number(dateSeconds)*1000);
 	if (timeSlots[date.getHours()] != null) {
 		return;
 	}
-	var hourContainer = document.getElementById('hour' + date.getUTCHours());
 
 	eventElement = createEventElement(event);
+	//modelSuccess = pushEventToTimeSlot(date.getHours(), event, eventElement);
+	var hourContainer = document.getElementById('hour' + date.getUTCHours());
 	hourContainer.appendChild(eventElement);
 	addCalTouchListeners(eventElement, event["status"]);
 	eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: date.getHours()};
@@ -202,12 +273,12 @@ function adjustOverlay(x) {
 	
 	// Adjust opacity
 	if (xFraction > 0) {
-		overlay.setAttribute("class", "overlay_neg");
+		overlay.setAttribute("class", "overlay_maybe");
 		//overlay.style.backgroundImage = "-webkit-linear-gradient(left,rgba(184,0,0,0),rgba(184,0,0," + getSmoothedValue(Math.abs(xFraction)) + "))";
 		overlay.style.opacity = getSmoothedValue( Math.abs(xFraction) );
 	}
 	if (xFraction < 0) {
-		overlay.setAttribute("class", "overlay_pos");
+		overlay.setAttribute("class", "overlay_neg");
 		//overlay.style.backgroundImage = "-webkit-linear-gradient(right,rgba(0,184,0,0),rgba(0,184,0," + getSmoothedValue(Math.abs(xFraction)) + "))";
 		overlay.style.opacity = getSmoothedValue( Math.abs(xFraction) );
 	}
@@ -217,11 +288,11 @@ function adjustOverlay(x) {
 
 function handleswipe(item, dir) {
 	if (dir == 'right') {
-		eventRejected(item);
+		maybeEvent(item.id.split("_")[2]);
 		return 1;
 	}
 	if (dir == 'left') {
-		acceptEvent(item.id.split("_")[2]);
+		rejectEvent(item.id.split("_")[2]);
 		return 2;
 	}
 	if (dir == 'up') {
@@ -305,15 +376,21 @@ function calTouchMove(e) {
 	}
 	var x = e.changedTouches[0].pageX;
 	var y = e.changedTouches[0].pageY;
-	adjustedX = x - touchOffsetX;
-	adjustedY = y - touchOffsetY + window.pageYOffset; //Add vertical scroll offset
+	
+	// Check for vertical movement
+	distX = Math.abs(x - startX);
+	distY = Math.abs(y - startY);
+	if (Math.atan2(distY, distX) < 0.588) {
+		e.preventDefault();
+		adjustedX = x - touchOffsetX;
+		adjustedY = y - touchOffsetY + window.pageYOffset; //Add vertical scroll offset
 
-	item.style.top = adjustedY + "px";
-	item.style.left = adjustedX + "px";
-	//item.setAttribute("style", "top: " + adjustedY + "px; left: " + adjustedX + "px;");
+		item.style.top = adjustedY + "px";
+		item.style.left = adjustedX + "px";
+		//item.setAttribute("style", "top: " + adjustedY + "px; left: " + adjustedX + "px;");
 
-	adjustOverlay(x);
-	e.preventDefault();
+		adjustOverlay(x);
+	}
 }
 
 
@@ -346,12 +423,12 @@ function calTouchEnd(e) {
 	}
 	
 	if (x < 20) {
-		acceptEvent(item.id.split("_")[2]);
+		rejectEvent(item.id.split("_")[2]);
 		return;
 	}
 	
 	if (x > document.body.clientWidth - 20) {
-		eventRejected(item);
+		maybeEvent(item.id.split("_")[2]);
 		return;
 	}
 	
@@ -425,6 +502,21 @@ function requestEventData(eventElement) {
 }
 
 
+function updateLocalEventModel(id, updateType) {
+	eventRecord = findEventRecordById(id);
+	if (updateType == "accept") {
+		
+	} else if (updateType == "reject") {
+		timeSlots[eventRecord.timeSlot] = null;
+		eventRecord.element.parentNode.removeChild(eventRecord.element);
+	} else if (updateType == "maybe") {
+		timeSlots[eventRecord.timeSlot] = null;
+		eventRecord.element.parentNode.removeChild(eventRecord.element);
+	}
+}
+
+
+
 function acceptEvent(e) {
 	console.log("Accept!");
 	console.log(e);
@@ -434,12 +526,10 @@ function acceptEvent(e) {
 	if (eventViewMode) {
 		// Do something flashy
 		
-		// Accept on server
 		
 	} else {
 		// Overlay flash?
 		
-		// Accept on server
 	}
 }
 
@@ -447,12 +537,33 @@ function acceptEvent(e) {
 function rejectEvent(e) {
 	console.log("Reject!");
 	console.log(e);
+	
+	sendEventRejection(e);
+	
+	if (eventViewMode) {
+		// Do something flashy
+		
+		
+	} else {
+		// Overlay flash?
+		
+	}
 }
 
 
 function maybeEvent(e) {
 	console.log("Maybe!");
 	console.log(e);
+	
+	sendEventMaybe(e);
+	
+	if (eventViewMode) {
+		// Do something flashy
+	
+	} else {
+		// Overlay flash?
+	
+	}
 }
 
 

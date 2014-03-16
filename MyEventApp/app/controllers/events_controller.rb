@@ -54,6 +54,8 @@ class EventsController < ApplicationController
             invite.event = @event
             invite.accepted = false
             invite.seen = false
+            invite.rejected = false
+            invite.maybe = false
             invite.created_at = Time.now
             invite.save
           end

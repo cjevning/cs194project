@@ -18,6 +18,8 @@ MyEventApp::Application.routes.draw do
   get 'calendar/events' => 'calendar#events'
   get 'calendar/event_details' => 'calendar#event_details'
   get 'calendar/accept' => 'calendar#accept'
+  get 'calendar/reject' => 'calendar#reject'
+  get 'calendar/maybe' => 'calendar#maybe'
   get 'invitations/show' => 'invitations#show'
   get 'invitations/accept' => 'invitations#accept'
 
