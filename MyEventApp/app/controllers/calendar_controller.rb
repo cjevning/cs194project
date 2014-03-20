@@ -324,11 +324,6 @@ class CalendarController < ApplicationController
             findHour = DateTime.now.change(hour: hour.to_i, minute: 0)
             plusOne = DateTime.now.change(hour: hour.to_i+1, minute: 0)
             nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
-            #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ?", maxLat, minLat, maxLng, minLng, true)
-            nearEvents.each do |e|
-                date = e.start
-            end
-            #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
         end
         return nearEvents
     end

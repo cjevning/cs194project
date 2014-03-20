@@ -2,21 +2,13 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+      <button type="button" id="main_button" class="navbar-toggle" onclick="newEvent()">
+      	<span class="glyphicon glyphicon-plus"></span>
       </button>
       <%= link_to 'Home', root_path, class: 'navbar-brand' %>
-    </div>
-    <div class="container">
-      KarmaFriend
-    </div>
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <%= render 'layouts/navigation_links' %>
-      </ul>
+      <div class="navbar-brand">
+        KarmaFriend
+      </div>
     </div>
   </div>
 </nav>

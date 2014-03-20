@@ -64,9 +64,10 @@ function pushEventToTimeSlot(slotNumber, event, eventElement) {
 
 
 
-function loadEvents() {
+function loadData() {
 	
 	sendEventRequest();
+	loadNewForm();
 }
 
 
@@ -847,4 +848,58 @@ function removeEventTouchListeners(item) {
 	item.removeEventListener('touchmove', eventTouchMove);
 	//item.removeEventListener('touchend', eventTouchEnd);
 	//item.removeEventListener('touchcancel', eventTouchCancel);
+}
+
+
+
+function cancelNewEvent() {
+	mainButton = document.getElementById("main_button");
+	mainButton.innerHTML = "<span class='glyphicon glyphicon-plus'></span>";
+	mainButton.onclick = newEvent;
+	mainButton.style.backgroundColor = "transparent";
+	
+	$('#new_overlay').animate({top:(window.pageYOffset + $(window).height()) + "px"}, "slow", "swing", function() { $('#new_overlay').hide(); });
+	window.removeEventListener('touchmove');
+}
+
+
+
+function loadNewForm() {
+	$.ajax({
+		url:  '/events/new_part',
+		data: {} ,
+		type: 'GET',
+		success:function(result){
+			newOverlay = document.createElement("DIV");
+			newOverlay.id = "new_overlay";
+			newOverlay.innerHTML = result["content"];
+			document.body.appendChild(newOverlay);
+			var $newOver = $(newOverlay);
+			$newOver.hide();
+			loadFriends(result["data"]);
+		}
+	});
+}
+
+
+
+function newEvent() {
+	console.log($("#eventform"));
+	$('#eventform').bind('ajax:success', function(event, data, status, xhr) {
+			console.log('event created');
+		});
+
+	newOver = document.getElementById("new_overlay");
+	newOver.style.top = ($(window).height() + window.pageYOffset) + "px";
+	//$('#new_overlay').top = ($(window).height() + window.pageYOffset) + "px";
+	
+	mainButton = document.getElementById("main_button");
+	mainButton.innerHTML = "<span class='glyphicon glyphicon-remove'></span>";
+	mainButton.onclick = cancelNewEvent;
+	mainButton.style.backgroundColor = "transparent";
+	
+	$('#new_overlay').show();
+	$('#new_overlay').animate({top:(window.pageYOffset + 56) + "px"}, "slow", "swing");
+	
+	window.addEventListener('touchmove', function (e) { e.preventDefault(); });
 }

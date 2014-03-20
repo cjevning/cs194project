@@ -1,7 +1,7 @@
 MyEventApp::Application.routes.draw do
  
   get "calendar/day"
-  root 'home#index'
+  root 'calendar#day'
 
   devise_for :user, :controllers => { :omniauth_callbacks => "user/omniauth_callbacks" }
   
@@ -9,8 +9,10 @@ MyEventApp::Application.routes.draw do
   get 'home' => 'home#index'
   get 'events/index' => 'events#index'
   get 'events/new' => 'events#new'
+  get 'events/new_part' => 'events#new_part'
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
+  get 'events/get_tag' => 'events#get_tag'
   get 'events/show' => 'events#show'
   get 'user/profile' => 'user#profile'
   get 'user/search' => 'user#search'
