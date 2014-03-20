@@ -21,9 +21,10 @@ MyEventApp::Application.routes.draw do
   get 'calendar/accept' => 'calendar#accept'
   get 'invitations/show' => 'invitations#show'
   get 'invitations/accept' => 'invitations#accept'
-
+  get 'invitations/flaked' => 'invitations#flaked'
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events
+
   get 'calendar/feed/:id/feed' => 'calendar#feed', :as => 'cal_feed_path'
   
 
