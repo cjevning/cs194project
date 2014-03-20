@@ -13,7 +13,7 @@
 .event_item {
 	position: absolute;
 	height: 74px;
-	width: 82%;
+	width: 70%;
 	z-index: 11;
 }
 
@@ -187,4 +187,12 @@
 
 #detail_btn_group {
 	margin-bottom: 10px;
+}
+
+
+.maybe_item {
+	width: 40px;
+	height: 74px;
+	background-color: rgba(237,156,40,1);
+	float: right;
 }

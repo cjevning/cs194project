@@ -22,8 +22,14 @@ var startX,
 
 function findEventRecordById(id) {
 	for (var i = 0; i < timeSlots.length; i++) {
-		if (timeSlots[i] != null) {
-			if (timeSlots[i].id == id) return timeSlots[i];
+		timeSlot = timeSlots[i];
+		if (timeSlot != null) {
+			if (timeSlot.active.id == id) return timeSlot.active;
+			else {
+				for (var j = 0; j < timeSlot.maybe.length; j++) {
+					if (timeSlot.maybe[j].id == id) return timeSlot.maybe[j];
+				}
+			}
 		}
 	}
 }
@@ -32,10 +38,28 @@ function findEventRecordById(id) {
 
 function pushEventToTimeSlot(slotNumber, event, eventElement) {
 	if (timeSlots[slotNumber] == null) {
+		// Lazy instantiation
 		maybes = new Array();
-		timeSlots[slotNumber] = {display: null, maybe: maybes}
+		timeSlots[slotNumber] = {active: null, maybe: maybes}
 	}
 	eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: slotNumber};
+	if (timeSlots[slotNumber].active == null) {
+		timeSlots[slotNumber].active = eventRecord;
+		return "active";
+	} else if (timeSlots[slotNumber].active.object.maybe == true && event.maybe != true) {
+		// Replace active with event, send active to maybe folder
+		timeSlots[slotNumber].maybe.push(timeSlots[slotNumber].active);
+		displayAddMaybe(timeSlots[slotNumber].active);
+		timeSlots[slotNumber].active = eventRecord;
+		return "active_replace";
+	} else if (event.maybe == true) {
+		timeSlots[slotNumber].maybe.push(eventRecord);
+		displayAddMaybe(eventRecord);
+		return "maybe";
+	} else {
+		// Failure
+		return null;
+	}
 }
 
 
@@ -154,17 +178,14 @@ function processEvent(event) {
 	console.log(event);
 	dateSeconds = event["start_in_seconds"];
 	date = new Date(Number(dateSeconds)*1000);
-	if (timeSlots[date.getHours()] != null) {
-		return;
-	}
 
 	eventElement = createEventElement(event);
-	//modelSuccess = pushEventToTimeSlot(date.getHours(), event, eventElement);
+	modelSuccess = pushEventToTimeSlot(date.getHours(), event, eventElement);
 	var hourContainer = document.getElementById('hour' + date.getUTCHours());
-	hourContainer.appendChild(eventElement);
+	hourContainer.insertBefore(eventElement, hourContainer.firstChild);
 	addCalTouchListeners(eventElement, event["status"]);
-	eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: date.getHours()};
-	timeSlots[date.getHours()] = eventRecord;
+	//eventRecord = {id: event["id"], element: eventElement, object: event, timeSlot: date.getHours()};
+	//timeSlots[date.getHours()] = eventRecord;
 }
 
 
@@ -502,16 +523,40 @@ function requestEventData(eventElement) {
 }
 
 
+function showMaybes(id) {
+	alert("maybes" + id);
+}
+
+
+// Call before adding the new event from the server
+function displayAddMaybe(eventRecord) {
+	wrapper = eventRecord.element.parentNode;
+	
+	// Remove all children
+	while (wrapper.firstChild) {
+		wrapper.removeChild(wrapper.firstChild);
+	}
+	
+	// Render maybe folder button
+	maybeWrapper = document.createElement("DIV");
+	maybeWrapper.className = "maybe_item";
+	maybeWrapper.onclick = function () { showMaybes(eventRecord.id) };
+	wrapper.appendChild(maybeWrapper);
+}
+
+
+
 function updateLocalEventModel(id, updateType) {
 	eventRecord = findEventRecordById(id);
 	if (updateType == "accept") {
 		
 	} else if (updateType == "reject") {
-		timeSlots[eventRecord.timeSlot] = null;
+		timeSlots[eventRecord.timeSlot].active = null;
 		eventRecord.element.parentNode.removeChild(eventRecord.element);
 	} else if (updateType == "maybe") {
-		timeSlots[eventRecord.timeSlot] = null;
-		eventRecord.element.parentNode.removeChild(eventRecord.element);
+		timeSlots[eventRecord.timeSlot].active = null;
+		timeSlots[eventRecord.timeSlot].maybe.push(eventRecord);
+		displayAddMaybe(eventRecord);
 	}
 }
 
