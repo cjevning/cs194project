@@ -8,11 +8,7 @@ class CalendarController < ApplicationController
         eventHash["description"] = evt.description
         eventHash["start_in_seconds"] = evt.start.to_i
         eventHash["id"] = evt.id
-        puts "test"
         token = session[:fb_access_token]
-        if evt.user.uid == 100007773906483
-            token = "CAAGkhN8xMN4BAJX3pZBjIW9hPebL03sOPqmDR8V3vEksZAHsLPQtfd9tzfBbC1v3IJBhKMM7PMZBF3Ra2uD6xdBxZAbml58GhCEs2m6UHIDDUsFJJfx11y3XZBmwM6ivvDzEixHtf8ii86JSGlmCyKTxzLr0ZAchSbvDhbOVy2Y1IwWphlMeqSOL9ZBbBGR5UWxuvlxzabRNgZDZD"
-        end
         owner = FbGraph::User.fetch(evt.user.uid, access_token: token)
         eventHash["owner_pic"] = owner.picture
         eventHash["owner_name"] = owner.name
@@ -242,11 +238,6 @@ class CalendarController < ApplicationController
 
 
     def event_for_hour(hour)
-        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
         # Priority 1: owner
         events = Event.where( user: current_user )
         events.each do |event|
@@ -276,9 +267,6 @@ class CalendarController < ApplicationController
         
         # Priority 4: Public event not seen
         events = getNearEvents(hour)
-        puts "\n\n-----------------\n\n"
-        puts events
-        puts "\n\n-----------------\n\n"
         events.each do |event|
             invitations = Invitations.where( user: current_user, event: event)
             if (invitations.length == 0)
@@ -328,13 +316,10 @@ class CalendarController < ApplicationController
         else
             findHour = DateTime.now.change(hour: hour.to_i, minute: 0)
             plusOne = DateTime.now.change(hour: hour.to_i+1, minute: 0)
-            puts "===============================" + findHour.to_s
-            puts "===============================" + plusOne.to_s
             nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
             #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ?", maxLat, minLat, maxLng, minLng, true)
             nearEvents.each do |e|
                 date = e.start
-                puts "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[" + e.start.to_s
             end
             #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
         end

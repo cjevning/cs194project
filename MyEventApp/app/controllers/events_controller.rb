@@ -34,7 +34,6 @@ class EventsController < ApplicationController
   end
 
   def create
-    puts event_params
   	@event = Event.new(event_params)
     @event.user = current_user
     @friends = params[:friends]
