@@ -4,7 +4,6 @@ class CreateInvitations < ActiveRecord::Migration
       t.boolean :accepted
       t.boolean :seen
       t.timestamp :created_at
-
       t.timestamps
     end
   end
