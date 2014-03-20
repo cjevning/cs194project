@@ -1,35 +1,51 @@
-<h1> Create Event </h1>
+<h1 class='text-center'> Create An Event </h1>
 <%= form_for @event, {:class => "navbar-form"} do |form| %>
 	
-	<div id='event_creation_dialog'>
-		<div class="input-group new_event_form_line">
-			<span class="input-group-addon">Name</span>
-			<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
+	<div id='event_creation_dialog' class='container'>
+
+		<div class="input-group row">
+			<span class="input-group-addon">Event Name</span>
+			<%= form.text_field :name, {:class => "form-control row"} %>
 		</div>
-		
-		<div class="input-group new_event_form_line">
+		<div class='input-group row'>
+			<%= select_tag :days, options_for_select(@days, "Today"), :class => 'input-xlarge form-control'%>
+		</div>		
+		<div class="input-group row">
 			<span class="input-group-addon">Start Time</span>
 			<div class="input-group">
 				<div class="input-group-btn">
-					<%= form.time_select :start, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+					<%= form.time_select :start, {minute_step: 5, ampm: true}, {:class => "form-control", :placeholder => Time.now} %>
 				</div>
 			</div>
 		</div>
 
-		<div class="input-group new_event_form_line">
+		<div class="input-group row">
 			<span class="input-group-addon">End Time</span>
 			<div class="input-group">
 				<div class="input-group-btn">
-					<%= form.time_select :end, {minute_step: 5, ampm: true}, {:class => "form-control", :style => "float:none; margin-right:10px; margin-left:-2px; width:75px;"} %>
+					<%= form.time_select :end, {minute_step: 5, ampm: true}, {:class => "form-control", :placeholder => Time.now} %>
 				</div>
 			</div>
 		</div>
 
-		<div class="input-group new_event_form_line">
+		<div class="input-group row">
 			<span class="input-group-addon">Description</span>
-			<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
+			<%= form.text_area :description, {:class => "form-control", :placeholder => "There will be...!"} %>
+		</div>
+		
+		<div class='input-group row'>
+			<span class='input-group-addon'>Tags</span>
+			<div id="tags"></div>
 		</div>
 
+		<div class="input-group">
+			<span class='input-group-addon'>Share With:</span>
+			<div id='selector' class="btn-group">
+				<button type="button" class='btn btn-default' value='fof'>Friends of Friends</button>
+				<button type="button" class='btn btn-default' value='friends'>Just Friends</button>
+			</div>
+		</div>
+		
 		<button type='button' class='btn btn-default' onclick='continue_dialog();'>
 			<span class="glyphicon glyphicon-chevron-right"></span>
 			<span class="glyphicon glyphicon-chevron-right"></span>
@@ -38,30 +54,13 @@
 
 	</div>
 	
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">
-			<%= form.check_box :public %>
-		</span>
-		<span class="form-control ignore_form_background">Public - all your friends can see this</span>
-	</div>
-	
-	<div class="input-group new_event_form_line">
-		<span class="input-group-addon">
-			<%= form.check_box :allows_fof %>
-		</span>
-		<span class="form-control ignore_form_background">Include friends of friends - expand your social circle!</span>
-	</div>
-
-	<div id='friend_invite_dialog'>
+	<div id='friend_invite_dialog' class='container'>
 		<h3>Invite friends</h3>
 	    <input type="text" class="form-control" placeholder="Search" id='friend_searcher'> <br />
-		
-		<ul id='friend_list'>
-			<% @friends.each do |friend| %>
-				<li class='list-group-item friend' value=<%=friend.identifier%> > <%= friend.name%> </li> 
-			<% end %>
-		</ul>
-
+		 
+		<%= hidden_field_tag :friends, :friends %>
+		<%= hidden_field_tag :form_tags, :form_tags %>
+		<%= hidden_field_tag :form_privacy, :form_privacy %>
 		<script type="text/javascript">
 			var search_box = new searchable_list("friend_list", "friend_searcher", "friend");
 		</script>
@@ -72,6 +71,7 @@
 				<span class="glyphicon glyphicon-chevron-left"></span>
 				<span class="glyphicon glyphicon-chevron-left"></span>
 			</button>
+		
 			<%= form.submit "Create Event", {:class => "btn btn-default submit_button"} %>
 		</div>
 	</div>

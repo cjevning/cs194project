@@ -1,30 +1,5 @@
+choosen_friends = [];
 
-var first_seen = false;
-
-function continue_dialog(){
-    if(!first_seen){
-        $("#event_creation_dialog").animate({left: '350px', right:'-350px'});
-    } else {
-        $("#event_creation_dialog").animate({left: '350px'});
-    }
-    $("#event_creation_dialog").hide();
-    
-    $("#friend_invite_dialog").show();
-
-    if(!first_seen){
-        $("#friend_invite_dialog").animate({left: '350px', right:'-350px' });
-        first_seen = true;
-    } else {
-        $("#friend_invite_dialog").animate({left: '350px', right:'-350px' });
-    }
-}
-
-function back_dialog(){
-    $("#friend_invite_dialog").animate({right: '350px', left:'-350px' });
-    $("#friend_invite_dialog").hide();
-    $("#event_creation_dialog").show();
-    $("#event_creation_dialog").animate({right: '350px', left:'-350px' });
-}
 /*
  * We can use this code to create any searchable list
  */
@@ -56,13 +31,19 @@ function searchable_list(list_id, search_id, elem){
 }
 
 searchable_list.prototype.item_click = function(clicked_li){
-    console.log(clicked_li);
-    if(clicked_li.className == this.elem + ' list-group-item list-group-item-success'){
+    var index = choosen_friends.indexOf(clicked_li.value);
+
+    //the user is removing the item from the list
+    if( index >= 0 ){
         clicked_li.className = this.elem + ' list-group-item';
+        choosen_friends.splice(index,1);       
+    //The user is adding the item to the list
     } else {
         clicked_li.className = this.elem + ' list-group-item list-group-item-success';
+        choosen_friends.append[clicked_li.value];
     }
-
+    $("#friends").value = JSON.stringify(choosen_friends);
+    console.log(choosen_friends);
 }
 
 searchable_list.prototype.search_for = function(value){
