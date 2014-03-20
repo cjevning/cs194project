@@ -1,0 +1,25 @@
+<h3> Who Flaked? </h3>
+</br>
+<h2> Select the names of people who didn't show <h2>
+<div class='list-group'>
+<%= form_tag({controller: "invitations", action: "flaked"}, method: "get") do |form| %>
+<%= hidden_field_tag :event_id, @event.id %>
+<% @invites.each do |invite| %>
+	<% if invite.accepted %>
+		<span class="list-group-item list-group-item-success" > <span class="badge">Accepted</span>
+			<%= check_box_tag 'users[]', invite.user.id %>
+			<%= invite.user.name %>
+
+		</span>
+	<% end %>
+
+<%= submit_tag("Submit") %>
+
+<% end %>
+<% end %>
+
+</div>
+</br>
+</br>
+
+<h3> <%= @event.name %> </h3>

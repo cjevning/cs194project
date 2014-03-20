@@ -2,10 +2,18 @@ class UserController < ApplicationController
 	before_filter :authenticate_user!
     
     def profile
-        @user = FbGraph::User.me(session[:fb_access_token]).fetch
+        @user = current_user
         #puts @user.inspect
     end
-    
+
+    def update_score
+        invitations1 = Invitations.where(user: current_user, accepted: true, attended: true)
+        count1 = invitations1.count
+        invitations2 = Invitations.where(user: current_user, accepted: true)
+        count2 = invitations2.count
+        score = (count1 / count2) * 100
+        user.score = score 
+    end
     
     def search
         user = FbGraph::User.me(session[:fb_access_token]).fetch
@@ -24,5 +32,4 @@ class UserController < ApplicationController
         
         render :partial => "search_thumbnails", :layout => false
     end
-    
 end
