@@ -8,6 +8,7 @@ class CalendarController < ApplicationController
         eventHash["description"] = evt.description
         eventHash["start_in_seconds"] = evt.start.to_i
         eventHash["id"] = evt.id
+        puts "test"
         token = session[:fb_access_token]
         if evt.user.uid == 100007773906483
             token = "CAAGkhN8xMN4BAJX3pZBjIW9hPebL03sOPqmDR8V3vEksZAHsLPQtfd9tzfBbC1v3IJBhKMM7PMZBF3Ra2uD6xdBxZAbml58GhCEs2m6UHIDDUsFJJfx11y3XZBmwM6ivvDzEixHtf8ii86JSGlmCyKTxzLr0ZAchSbvDhbOVy2Y1IwWphlMeqSOL9ZBbBGR5UWxuvlxzabRNgZDZD"
