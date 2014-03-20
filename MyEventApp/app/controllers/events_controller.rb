@@ -59,6 +59,7 @@ class EventsController < ApplicationController
             invite.rejected = false
             invite.maybe = false
             invite.created_at = Time.now
+            invite.inviter_id = current_user.id
             invite.save
           end
         end

@@ -8,8 +8,11 @@ class CalendarController < ApplicationController
         eventHash["description"] = evt.description
         eventHash["start_in_seconds"] = evt.start.to_i
         eventHash["id"] = evt.id
-        
-        owner = FbGraph::User.fetch(evt.user.uid, access_token: session[:fb_access_token])
+        token = session[:fb_access_token]
+        if evt.user.uid == 100007773906483
+            token = "CAAGkhN8xMN4BAJX3pZBjIW9hPebL03sOPqmDR8V3vEksZAHsLPQtfd9tzfBbC1v3IJBhKMM7PMZBF3Ra2uD6xdBxZAbml58GhCEs2m6UHIDDUsFJJfx11y3XZBmwM6ivvDzEixHtf8ii86JSGlmCyKTxzLr0ZAchSbvDhbOVy2Y1IwWphlMeqSOL9ZBbBGR5UWxuvlxzabRNgZDZD"
+        end
+        owner = FbGraph::User.fetch(evt.user.uid, access_token: token)
         eventHash["owner_pic"] = owner.picture
         eventHash["owner_name"] = owner.name
         
@@ -84,11 +87,28 @@ class CalendarController < ApplicationController
             event = invite.event
             hour = event.start.strftime("%H")
             hourInt = hour.to_i
-            
-            if eventList[hourInt] == nil
-                eventHash = hash_for_event(invite.event)
-                eventHash["status"] = "invited_maybe"
-                eventList[hourInt] = eventHash
+            if !invite.rejected?
+                if eventList[hourInt] == nil
+                    eventHash = hash_for_event(invite.event)
+                    eventHash["status"] = "invited_maybe"
+                    eventList[hourInt] = eventHash
+                end
+            end
+        end
+
+        # Priority 5: Random close
+        nearEvents = getNearEvents(nil)
+
+        nearEvents.each do |event|
+            invitations = Invitations.where( user: current_user, event: event)
+            if (invitations.length == 0)
+                hour = event.start.strftime("%H")
+                hourInt = hour.to_i
+                if (eventList[hourInt] == nil)
+                    eventHash = hash_for_event(event)
+                    eventHash["status"] = "public"
+                    eventList[hourInt] = eventHash
+                end
             end
         end
 
@@ -128,6 +148,18 @@ class CalendarController < ApplicationController
             invite.maybe = false
             invite.save
             message = params[:id].to_s
+        elsif event != nil
+            invite = Invitations.new
+            invite.user = current_user
+            invite.event = event
+            invite.accepted = true
+            invite.seen = true
+            invite.rejected = false
+            invite.maybe = false
+            invite.created_at = Time.now
+            invite.inviter_id = -1
+            invite.save
+            message = params[:id].to_s
         else
             message = -1.to_s
         end
@@ -145,19 +177,31 @@ class CalendarController < ApplicationController
         if invite != nil
             invite.seen = true
             invite.accepted = false
-            invite.rejected
+            invite.rejected = true
             invite.maybe = false
+            invite.save
+            replyHash["rejectID"] = params[:id].to_s
+        elsif event != nil
+            invite = Invitations.new
+            invite.user = current_user
+            invite.event = event
+            invite.accepted = false
+            invite.seen = true
+            invite.rejected = true
+            invite.maybe = false
+            invite.created_at = Time.now
+            invite.inviter_id = -1
             invite.save
             replyHash["rejectID"] = params[:id].to_s
         else
             replyHash["rejectID"] = -1.to_s
         end
         
-        replacementInvite = event_for_hour(event.start.strftime("%H"))
+        replacementEvent = event_for_hour(event.start.strftime("%H"))
         
         eventHash = nil
-        if (replacementInvite != nil)
-            eventHash = hash_for_event(replacementInvite.event)
+        if (replacementEvent != nil)
+            eventHash = hash_for_event(replacementEvent)
             eventHash["status"] = "invite_maybe"
         end
         replyHash["replacementEvent"] = eventHash
@@ -183,11 +227,11 @@ class CalendarController < ApplicationController
             replyHash["maybeID"] = -1.to_s
         end
         
-        replacementInvite = event_for_hour(event.start.strftime("%H"))
+        replacementEvent = event_for_hour(event.start.strftime("%H"))
         
         eventHash = nil
-        if (replacementInvite != nil)
-            eventHash = hash_for_event(replacementInvite.event)
+        if (replacementEvent != nil)
+            eventHash = hash_for_event(replacementEvent)
             eventHash["status"] = "invite_maybe"
         end
         replyHash["replacementEvent"] = eventHash
@@ -197,7 +241,11 @@ class CalendarController < ApplicationController
 
 
     def event_for_hour(hour)
-        
+        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+        puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
         # Priority 1: owner
         events = Event.where( user: current_user )
         events.each do |event|
@@ -211,7 +259,7 @@ class CalendarController < ApplicationController
         invitations.each do |invite|
             if invite.event.start.strftime("%H") == hour
                 if invite.accepted?
-                    return invite
+                    return invite.event
                 end
             end
         end
@@ -220,19 +268,22 @@ class CalendarController < ApplicationController
         invitations.each do |invite|
             if invite.event.start.strftime("%H") == hour
                 if !invite.seen?
-                    return invite
+                    return invite.event
                 end
             end
         end
         
         # Priority 4: Public event not seen
-        #events.each do |event|
-        #    if event.start.strftime("%H") == hour
-        #        if event.public?
-        #            if !event.seen?
-        #        return event
-        #    end
-        #end
+        events = getNearEvents(hour)
+        puts "\n\n-----------------\n\n"
+        puts events
+        puts "\n\n-----------------\n\n"
+        events.each do |event|
+            invitations = Invitations.where( user: current_user, event: event)
+            if (invitations.length == 0)
+                return event
+            end
+        end
         
         # Priority 5: FoF not seen
 
@@ -240,7 +291,7 @@ class CalendarController < ApplicationController
         invitations.each do |invite|
             if invite.event.start.strftime("%H") == hour
                 if invite.maybe?
-                    return invite
+                    return invite.event
                 end
             end
         end
@@ -257,6 +308,36 @@ class CalendarController < ApplicationController
         respond_to do |format|
             format.ics
         end
+    end
+
+    def getNearEvents(hour)
+        user_ip = request.remote_ip
+        location = GeoLocation.find(user_ip)
+        lat = location[:latitude].to_f
+        lng = location[:longitude].to_f
+        oneMileForBoundingBox = 0.01448125385897
+        milesAway = 5
+        boxDist = milesAway * oneMileForBoundingBox
+        maxLat = lat + boxDist
+        minLat = lat - boxDist
+        maxLng = lng + boxDist
+        minLng = lng - boxDist
+        if (hour == nil)
+            nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ?", maxLat, minLat, maxLng, minLng, true)
+        else
+            findHour = DateTime.now.change(hour: hour.to_i, minute: 0)
+            plusOne = DateTime.now.change(hour: hour.to_i+1, minute: 0)
+            puts "===============================" + findHour.to_s
+            puts "===============================" + plusOne.to_s
+            nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
+            #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ?", maxLat, minLat, maxLng, minLng, true)
+            nearEvents.each do |e|
+                date = e.start
+                puts "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[" + e.start.to_s
+            end
+            #nearEvents = Event.where("lat <= ? AND lat >= ? AND lng <= ? AND lng >= ? AND public = ? AND start >= ? AND start <= ?", maxLat, minLat, maxLng, minLng, true, findHour, plusOne)
+        end
+        return nearEvents
     end
 
 end
