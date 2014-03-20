@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318234428) do
+ActiveRecord::Schema.define(version: 20140218212519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,19 +28,6 @@ ActiveRecord::Schema.define(version: 20140318234428) do
     t.datetime "updated_at"
   end
 
-  create_table "english_words", force: true do |t|
-    t.string   "word"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "event_tags", force: true do |t|
-    t.integer  "event_id"
-    t.integer  "tag_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "events", force: true do |t|
     t.integer  "user_id"
     t.string   "name"
@@ -49,21 +36,15 @@ ActiveRecord::Schema.define(version: 20140318234428) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "public"
-    t.boolean  "allows_fof"
-  end
-
-  create_table "frequent_words", force: true do |t|
-    t.string "word"
   end
 
   create_table "invitations", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "event_id"
     t.boolean  "accepted"
     t.boolean  "seen"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
-    t.integer  "event_id"
   end
 
   create_table "sessions", force: true do |t|
@@ -75,12 +56,6 @@ ActiveRecord::Schema.define(version: 20140318234428) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
-
-  create_table "tags", force: true do |t|
-    t.string   "word"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

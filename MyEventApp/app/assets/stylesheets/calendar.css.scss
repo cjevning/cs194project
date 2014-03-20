@@ -195,4 +195,15 @@
 	height: 74px;
 	background-color: rgba(237,156,40,1);
 	float: right;
+	display: table;
+}
+
+
+.maybe_label {
+	margin: 0 auto;
+	width: 50%;
+	margin-top: 25px;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
 }

@@ -523,8 +523,19 @@ function requestEventData(eventElement) {
 }
 
 
-function showMaybes(id) {
-	alert("maybes" + id);
+function showMaybe(timeSlot) {
+	maybeRecord = timeSlots[timeSlot].maybe.shift();
+	console.log("parent");
+	console.log(timeSlots[timeSlot].active.element);
+	console.log(timeSlots[timeSlot].active.element.parentNode);
+	timeSlots[timeSlot].active.element.parentNode.removeChild(timeSlots[timeSlot].active.element);
+	timeSlots[timeSlot].active = maybeRecord;
+	processEvent(maybeRecord.object);
+	console.log(timeSlots[timeSlot].maybe);
+	if (timeSlots[timeSlot].maybe.length <= 0) {
+		maybeItem = document.getElementById("maybe_item_" + timeSlot);
+		maybeItem.parentNode.removeChild(maybeItem);
+	}
 }
 
 
@@ -540,7 +551,15 @@ function displayAddMaybe(eventRecord) {
 	// Render maybe folder button
 	maybeWrapper = document.createElement("DIV");
 	maybeWrapper.className = "maybe_item";
-	maybeWrapper.onclick = function () { showMaybes(eventRecord.id) };
+	maybeWrapper.id = "maybe_item_" + eventRecord.timeSlot;
+	//maybeWrapper.setAttribute('onclick', 'showMaybe(' + eventRecord.timeSlot + ')');
+	maybeWrapper.onclick = function () {showMaybe(eventRecord.timeSlot);};
+	
+	maybeLabel = document.createElement("DIV");
+	maybeLabel.className = "maybe_label";
+	maybeLabel.innerHTML = timeSlots[eventRecord.timeSlot].maybe.length;
+	maybeWrapper.appendChild(maybeLabel);
+	
 	wrapper.appendChild(maybeWrapper);
 }
 
@@ -688,10 +707,12 @@ function renderEventBody(event) {
 	
 	eventBody.appendChild(header);
 	
-	// Add action buttons
-	detailButtonGroup = getDetailButtonGroup(event["id"]);
-	detailButtonGroup.id = "detail_btn_group";
-	eventBody.appendChild(detailButtonGroup);
+	if (event["status"] != "owner") {
+		// Add action buttons
+		detailButtonGroup = getDetailButtonGroup(event["id"]);
+		detailButtonGroup.id = "detail_btn_group";
+		eventBody.appendChild(detailButtonGroup);
+	}
 	
 	var invitesArray = event["invitations"];
 	listWrapper = document.createElement("DIV");
