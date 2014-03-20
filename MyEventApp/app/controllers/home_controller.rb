@@ -20,7 +20,7 @@ class HomeController < ApplicationController
 			@eventsGrouped.push(@eventGroup)
 		end
 		currTime = Time.now
-		@events.each do |e|
+		@nearEvents.each do |e|
 			diff = (e.start-currTime)/(60*60)
 			if (diff > -1) 
 				for elem in 0..len
