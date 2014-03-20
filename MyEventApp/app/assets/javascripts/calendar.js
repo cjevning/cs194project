@@ -406,7 +406,7 @@ function calTouchMove(e) {
 		adjustedX = x - touchOffsetX;
 		adjustedY = y - touchOffsetY + window.pageYOffset; //Add vertical scroll offset
 
-		item.style.top = adjustedY + "px";
+		//item.style.top = adjustedY + "px";
 		item.style.left = adjustedX + "px";
 		//item.setAttribute("style", "top: " + adjustedY + "px; left: " + adjustedX + "px;");
 
@@ -525,15 +525,15 @@ function requestEventData(eventElement) {
 
 function showMaybe(timeSlot) {
 	maybeRecord = timeSlots[timeSlot].maybe.shift();
-	console.log("parent");
-	console.log(timeSlots[timeSlot].active.element);
-	console.log(timeSlots[timeSlot].active.element.parentNode);
-	timeSlots[timeSlot].active.element.parentNode.removeChild(timeSlots[timeSlot].active.element);
+	maybeItem = document.getElementById("maybe_item_" + timeSlot);
+	parent = timeSlots[timeSlot].active.element.parentNode;
+	parent.removeChild(timeSlots[timeSlot].active.element);
+	parent.appendChild(maybeRecord.element);
+	maybeRecord.element.style.top = null;
+	maybeRecord.element.style.left = null;
 	timeSlots[timeSlot].active = maybeRecord;
-	processEvent(maybeRecord.object);
-	console.log(timeSlots[timeSlot].maybe);
+	maybeItem.firstChild.innerHTML = timeSlots[timeSlot].maybe.length;
 	if (timeSlots[timeSlot].maybe.length <= 0) {
-		maybeItem = document.getElementById("maybe_item_" + timeSlot);
 		maybeItem.parentNode.removeChild(maybeItem);
 	}
 }
@@ -568,13 +568,26 @@ function displayAddMaybe(eventRecord) {
 function updateLocalEventModel(id, updateType) {
 	eventRecord = findEventRecordById(id);
 	if (updateType == "accept") {
-		
+		invitations = eventRecord.object["invitations"];
+		for (i = 0; i < invitations.length; i++) {
+			if (invitations[i]["self"] == true) {
+				invitations[i]["accepted"] = true;
+				invitations[i]["maybe"] = false;
+			}
+		}
 	} else if (updateType == "reject") {
 		timeSlots[eventRecord.timeSlot].active = null;
 		eventRecord.element.parentNode.removeChild(eventRecord.element);
 	} else if (updateType == "maybe") {
 		timeSlots[eventRecord.timeSlot].active = null;
 		timeSlots[eventRecord.timeSlot].maybe.push(eventRecord);
+		invitations = eventRecord.object["invitations"];
+		for (i = 0; i < invitations.length; i++) {
+			if (invitations[i]["self"] == true) {
+				invitations[i]["maybe"] = true;
+				invitations[i]["accepted"] = false;
+			}
+		}
 		displayAddMaybe(eventRecord);
 	}
 }
@@ -588,9 +601,8 @@ function acceptEvent(e) {
 	sendEventAcceptance(e);
 	
 	if (eventViewMode) {
-		// Do something flashy
-		
-		
+		inviteSelf = document.getElementById("invite_self");
+		inviteSelf.className = "list-group-item list-group-item-success";
 	} else {
 		// Overlay flash?
 		
@@ -726,10 +738,13 @@ function renderEventBody(event) {
 		wrapper = document.createElement("DIV");
 		if (inviteCopy["accepted"] == true) {
 			wrapper.className = "list-group-item list-group-item-success";
-		} else if (inviteCopy["seen"] == true) {
+		} else if (inviteCopy["rejected"] == true) {
 			wrapper.className = "list-group-item list-group-item-danger";
 		} else {
 			wrapper.className = "list-group-item list-group-item-warning";
+		}
+		if (inviteCopy["self"] == true) {
+			wrapper.id = "invite_self";
 		}
 		
 		circleDiv = document.createElement("DIV");
@@ -757,7 +772,10 @@ function eventClick(e) {
 	
 	eventViewMode = false;
 	
-	while (item.className.indexOf("event_item") == -1) item = item.parentElement;
+	while (item.className.indexOf("event_item") == -1) {
+		if (item.className.indexOf("btn-success") != -1) return;
+		item = item.parentElement;
+	}
 	//item.style.left = item.getBoundingClientRect().left + "px";
 	//item.style.top = (item.getBoundingClientRect().top + window.pageYOffset) + "px";
 	

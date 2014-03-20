@@ -20,7 +20,14 @@ class CalendarController < ApplicationController
             inviteHash = Hash.new
             inviteHash["accepted"] = invite.accepted
             inviteHash["seen"] = invite.seen
+            inviteHash["maybe"] = invite.maybe
+            inviteHash["rejected"] = invite.rejected
             inviteHash["name"] = invite.user.name
+            if invite.user == current_user
+                inviteHash["self"] = true
+            else
+                inviteHash["self"] = false
+            end
             inviteFriend = FbGraph::User.fetch(invite.user.uid, access_token: session[:fb_access_token])
             inviteHash["picture_url"] = inviteFriend.picture
             invitesArray.push(inviteHash)
