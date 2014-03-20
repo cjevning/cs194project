@@ -12,8 +12,8 @@ class HomeController < ApplicationController
 	def eventsAccordion
 		user_ip = request.remote_ip
 		location = GeoLocation.find(user_ip)
-		lat = location[:latitude]
-		lng = location[:longitude]
+		lat = location[:latitude].to_f
+		lng = location[:longitude].to_f
 		oneMileForBoundingBox = 0.01448125385897
 		milesAway = 5
 		boxDist = milesAway * oneMileForBoundingBox
@@ -36,7 +36,7 @@ class HomeController < ApplicationController
 			@eventsGrouped.push(@eventGroup)
 		end
 		currTime = Time.now
-		@events.each do |e|
+		@nearEvents.each do |e|
 			diff = (e.start-currTime)/(60*60)
 			if (diff > -1) 
 				for elem in 0..len
