@@ -24,9 +24,12 @@ class EventsController < ApplicationController
   end
 
   def attendance
-    @event = Event.find(params[:id]) 
-    redirect_to controller: 'home', action: 'index'
+    @event = Event.find(params[:id])
+    @invites = Invitations.where(event_id:@event.id)  
+  end
 
+  def updateAttendance
+    redirect_to controller: 'home', action: 'index'
   end
 
   def delete

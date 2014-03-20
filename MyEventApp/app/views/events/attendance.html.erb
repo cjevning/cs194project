@@ -1,7 +1,26 @@
-<h3> <%= @event.name %> </h3>
+<h3> Who pooped the bed? </h3>
+
 <div class='list-group'>
+<%= form_for @event do |form| %>
+
+
+
 <% @invites.each do |invite| %>
 	<% if invite.accepted %>
-		<%= invite.user.name %> </span>
+		<span class="list-group-item list-group-item-success" > <span class="badge">Accepted</span>
+			<%= form.check_box :public %>
+			<%= invite.user.name %>
+
+		</span>
+
+<%= form.submit "Submit Flaky Biscuit People" %>
+
+	<% end %>
 <% end %>
+<% end %>
+
 </div>
+</br>
+</br>
+
+<h3> <%= @event.name %> </h3>
