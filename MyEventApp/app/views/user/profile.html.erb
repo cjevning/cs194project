@@ -1,5 +1,6 @@
 <% if user_signed_in? %>
 	<h1><%= @user.name %></h1>
+	<h1><%= @user.score %></h1>
 	
 	<%= link_to "Create a fun event!", :controller => 'events', :action => 'new' %>
 <% else %>

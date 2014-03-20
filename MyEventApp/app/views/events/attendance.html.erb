@@ -1,0 +1,7 @@
+<h3> <%= @event.name %> </h3>
+<div class='list-group'>
+<% @invites.each do |invite| %>
+	<% if invite.accepted %>
+		<%= invite.user.name %> </span>
+<% end %>
+</div>

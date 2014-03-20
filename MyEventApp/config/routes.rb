@@ -11,6 +11,7 @@ MyEventApp::Application.routes.draw do
   get 'events/new' => 'events#new'
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
+  get 'events/attendance' => 'events#attendance'
   get 'events/show' => 'events#show'
   get 'user/profile' => 'user#profile'
   get 'user/search' => 'user#search'

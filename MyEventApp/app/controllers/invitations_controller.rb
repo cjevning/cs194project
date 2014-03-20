@@ -14,14 +14,18 @@ def show
     @event = @invitation.event
 end
 
-
-
 def accept
     invitation = Invitations.find(params[:id])
     invitation.accepted = true
     invitation.save
     flash[:notice] = "Invitation accepted!"
     redirect_to :controller => 'home', :action => 'index'
+end
+
+def flaked
+    invitation = Invitations.find(params[:id])
+    invitation.attended = false
+    invitation.save
 end
 
 

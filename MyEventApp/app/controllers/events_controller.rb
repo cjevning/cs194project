@@ -4,6 +4,12 @@ class EventsController < ApplicationController
   end
 
   def new
+    #check here to see if they have an event that has expired
+    #get current date
+    #@event1 = Event.where(user: current_user, end < DateTime.now, rated: false).order("end").take
+    #if(!event.rated?)
+     # redirect_to action: 'rate'
+   # end
     @event = Event.new
     user = FbGraph::User.me(session[:fb_access_token]).fetch
     @friends = user.friends
@@ -15,6 +21,12 @@ class EventsController < ApplicationController
     end
     @event = Event.find(params[:id])
     @invites = Invitations.where(event_id:@event.id)
+  end
+
+  def attendance
+    @event = Event.find(params[:id]) 
+    redirect_to controller: 'home', action: 'index'
+
   end
 
   def delete
