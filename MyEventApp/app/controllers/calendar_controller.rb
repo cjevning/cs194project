@@ -10,7 +10,7 @@ class CalendarController < ApplicationController
         eventHash["id"] = evt.id
         token = session[:fb_access_token]
         if evt.user.uid == 100007773906483
-            token = "CAAGkhN8xMN4BAGyer3hHHT7KOhPaORZCwj8opEG8KzDM3x8n0iLdHB866Rk7eLk3ZBis3YKqZB7xDZAENiM33bmYVI0ZA9Tskt4iMeRDPnS2X2jlpPtQNeOvNrW4yJ0ZBVbMAvYfKMO3LxwtEkZCkyHuf8za123AZBXP3gMRO9LZAeArcQieaao2J66G4wB6DOzqamLOZAFqby4gZDZD"
+            token = "CAAGkhN8xMN4BAKKoDxBpxRtZBpcgfTvpbZAS13VknoTZBr6ltqVcAN8i8u0K0VkAdMDzjKde7pFFUF0QPMjWBTPxVBXrL5o9LYsJT2ywWJdCJtZAOlHiMsxZB6DJugStJfwx6HfdgNWX8TGHqRtBfKkeVbVmlbTl9LSWYPZBcHVVKgtlbJ9jLHBLN7LmGWOlgtaCbx9t5ZBNQZDZD"
         end
         owner = FbGraph::User.fetch(evt.user.uid, access_token: token)
         eventHash["owner_pic"] = owner.picture
@@ -272,7 +272,7 @@ class CalendarController < ApplicationController
         # Priority 4: Public event not seen
         events = getNearEvents(hour)
         puts "\n\n------------------\n\n"
-        puts events
+        puts hour
         puts "\n\n------------------\n\n"
         events.each do |event|
             invitations = Invitations.where( user: current_user, event: event)

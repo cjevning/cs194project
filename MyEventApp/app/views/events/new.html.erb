@@ -1,6 +1,5 @@
 <h1 class='text-center'> Create An Event </h1>
 <%= form_for @event, {:class => "navbar-form"} do |form| %>
-<<<<<<< HEAD
 	<%  user_ip = request.remote_ip
 		location = GeoLocation.find(user_ip)
 		lat = location[:latitude]
@@ -11,8 +10,6 @@
 		<span class="input-group-addon">Name</span>
 		<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
 	</div>
-=======
->>>>>>> origin/travis_branch
 	
 	<div id='event_creation_dialog' class='container'>
 
