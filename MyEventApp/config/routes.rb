@@ -13,6 +13,7 @@ MyEventApp::Application.routes.draw do
   get 'events/delete' => 'events#delete'
   get 'events/edit' => 'events#edit'
   get 'events/get_tag' => 'events#get_tag'
+  get 'events/attendance' => 'events#attendance'
   get 'events/show' => 'events#show'
   get 'user/profile' => 'user#profile'
   get 'user/search' => 'user#search'
@@ -24,9 +25,10 @@ MyEventApp::Application.routes.draw do
   get 'calendar/maybe' => 'calendar#maybe'
   get 'invitations/show' => 'invitations#show'
   get 'invitations/accept' => 'invitations#accept'
-
+  get 'invitations/flaked' => 'invitations#flaked'
   match 'events/create' => 'events#create', via: [:get, :post], :as => :event
   resources :events
+
   get 'calendar/feed/:id/feed' => 'calendar#feed', :as => 'cal_feed_path'
   
 

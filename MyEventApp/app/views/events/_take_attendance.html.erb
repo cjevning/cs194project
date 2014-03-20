@@ -1,0 +1,18 @@
+
+<!--Trying to display each user who accepted the invitation and a yes or no button if they showed up-->
+
+<%= form_for @event do |form| %>
+	
+<%= @invites = Invitations.where(event_id:@event.id) %>
+<% @invites.each do |invite| %>
+	<% if invite.accepted %>
+	<%= invite.user %>
+	<%= radio_button_tag(:attended, true) %>
+	<%= label_tag(:attended_true, "attended") %>
+	<%= radio_button_tag(:attended, false) %>
+	<%= label_tag(:age_adult, "Flaked") %>
+	<% end %>
+
+<%= form.submit "Edit Attendance" %>
+
+
