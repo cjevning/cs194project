@@ -16,12 +16,27 @@ class User < ActiveRecord::Base
     end
   end
   def self.find_for_facebook_oauth(auth)
-    
+
+    dbUsers = self.all(:conditions => ["uid = ?", auth["uid"]])
+
   	where(auth.slice(:provider, :uid)).first_or_create do |user|
   		user.provider = auth.provider
   		user.uid = auth.uid
   		user.email = auth.info.email
+        user.name = auth.info.name
   		user.password= Devise.friendly_token[0,20]
-  	 end
+        
+        dbUsers.each do |u|
+            if u != user
+                invitations = Invitations.where( user: u )
+                invitations.each do |i|
+                    i.user = user
+                    i.save
+                end
+                u.destroy()
+            end
+        end
+    end
+
   end
 end

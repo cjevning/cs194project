@@ -2,17 +2,16 @@
 <div class='list-group'>
 <% @invites.each do |invite| %>
 	<% if invite.accepted %>
-		<span class="list-group-item list-group-item-success" > <span class="badge">Acceped</span>
+		<span class="list-group-item list-group-item-success" > <span class="badge">Accepted</span>
 
 		<% elsif invite.seen and !invite.accepted%>
 		<span class="list-group-item list-group-item-warning ">    <span class="badge">Rejected</span>
 		<% else %>
 		<span class="list-group-item list-group-item-info"> <span class="badge">Not Seen</span>
 		<% end %>
-		<%= invite.user_id %> </span>
+		<%= invite.user.name %> </span>
 <% end %>
 <%= link_to 'delete', :controller => 'events', :action => 'delete', :id => @event.id, :class => "btn" %>
 
 <%= link_to 'edit', :controller=> 'events', :action => 'edit', :id => @event.id, :class => "btn" %>
 </div>
-

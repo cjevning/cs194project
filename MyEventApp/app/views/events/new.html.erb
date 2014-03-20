@@ -1,5 +1,11 @@
 <h1> Create Event </h1>
 <%= form_for @event, {:class => "navbar-form"} do |form| %>
+	<%  user_ip = request.remote_ip
+		location = GeoLocation.find(user_ip)
+		lat = location[:latitude]
+		lng = location[:longitude] %>
+	<%= form.hidden_field :lat, :value => lat %>
+	<%= form.hidden_field :lng, :value => lng %>
 	<div class="input-group new_event_form_line">
 		<span class="input-group-addon">Name</span>
 		<%= form.text_field :name, {:class => "form-control", :placeholder => "Event Name"} %>
@@ -27,6 +33,20 @@
 	<div class="input-group new_event_form_line">
 		<span class="input-group-addon">Description</span>
 		<%= form.text_area :description, {:class => "form-control", :placeholder => "Event Description"} %>
+	</div>
+	
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">
+			<%= form.check_box :public %>
+		</span>
+		<span class="form-control ignore_form_background">Public - all your friends can see this</span>
+	</div>
+	
+	<div class="input-group new_event_form_line">
+		<span class="input-group-addon">
+			<%= form.check_box :allows_fof %>
+		</span>
+		<span class="form-control ignore_form_background">Include friends of friends - expand your social circle!</span>
 	</div>
 
 	<div class="input-group new_event_form_line">

@@ -1,3 +1,13 @@
-<h2><%= invitation.event.name %></h2>
-<p><%= invitation.event.description %></p>
-<br/>
+<%= link_to (url_for({:controller => "invitations", :action => "show", :id => invitation.id})), {:class => "list-group-item link_container"} do %>
+	<div class="event_li_top">
+		<p class="event_title">
+			<%= invitation.event.name %>
+		</p>
+		<p class="event_time">
+			<%= invitation.event.start.strftime("%l:%M%P") %> - <%= invitation.event.end.strftime("%l:%M%P") %>
+		</p>
+	</div>
+	<div class="event_li_bottom">
+		<p><%= invitation.event.description %></p>
+	</div>
+<% end %>

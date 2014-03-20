@@ -1,8 +1,10 @@
 <% if user_signed_in? %>
 	<h1>Invitations</h1>
-	<% @invitations.each do |invitation| %>
-		<%= render partial: "invitation_list_item", locals: {invitation: invitation} %>
-	<% end %>
+	<div class="list-group">
+		<% @invitations.each do |invitation| %>
+			<%= render partial: "invitation_list_item", locals: {invitation: invitation} %>
+		<% end %>
+	</div>
 	
 	<br/>
 	<h1>Events</h1>

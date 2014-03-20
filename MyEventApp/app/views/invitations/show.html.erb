@@ -1,0 +1,28 @@
+<h3> <%= @event.name %> </h3>
+<div class='list-group'>
+	<% if @invitation.accepted %>
+		<span class="list-group-item list-group-item-success" >
+		<%= @invitation.user.name %>
+		<span class="badge">Accepted</span>
+		</span>
+
+	<% elsif @invitation.seen and !@invitation.accepted%>
+		<div class="list-group-item list-group-item-warning accept_btn">
+			<div class="invite_reply">
+				<%= @invitation.user.name %>
+			</div>
+			<div class="invite_reply">
+				<%= link_to "Accept Invitation", { controller: "invitations", action: "accept", id: @invitation.id }, class: "btn btn-default invite_reply" %>
+			</div>
+		</div>
+	<% else %>
+		<div class="list-group-item list-group-item-info accept_btn">
+			<div class="invite_reply">
+				<%= @invitation.user.name %>
+			</div>
+			<div class="invite_reply">
+				<%= link_to "Accept Invitation", { controller: "invitations", action: "accept", id: @invitation.id }, class: "btn btn-default invite_reply" %>
+			</div>
+		</div>
+	<% end %>
+</div>
