@@ -1,6 +1,5 @@
-cs194project
-============
 KarmaFriend
+============
 Matt Bettonville, Conner Jevning, Brian Peltz, and Travis Sanchez
 
 
